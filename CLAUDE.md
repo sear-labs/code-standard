@@ -861,6 +861,264 @@ Paste this into a chat when asking an assistant to write or revise teaching code
 
 ---
 
+## Part 12 — Working alongside other sessions
+
+*(Part 11 is reserved for a project's own file — see Part 0.)*
+
+Several sessions run at once on this machine, in different folders, sometimes on one repo. These
+rules are about shared mutable state and about how you know a thing you claim to know.
+
+### The one-writer rule, stated properly
+
+> **At most one chat may WRITE to a given folder at a time.**
+> Any number may read.
+
+The rule is about **shared mutable state**, not about chats. Two chats are only dangerous when
+they can touch the same thing. Which case you are in decides everything:
+
+| Situation | Safe? | Why |
+|---|---|---|
+| **Different folders** | **Yes — no coordination needed** | Separate files, separate repos, separate memory. Run as many as you like. |
+| **Same folder, no git, different files** | **Mostly** | Each edits its own files. Two remaining risks: a folder-wide operation (a rename, a cleanup script), and both editing a shared `TODO`/`CONTEXT` file. |
+| **Same folder, same git repo** | **No — this is the one that bites** | Even editing *different* files, they share git state: one index, one HEAD, one branch. |
+
+That third row is the non-obvious one. Git state is shared even when files are not:
+
+- One chat's commit sweeps in whatever the other chat has staged (verified in a scratch repo)
+- A `git checkout` or `git reset` in one chat changes files under the other chat's feet, silently
+- `.git/index.lock` contention makes one of them block or error
+
+#### So: can one chat do PowerPoints while another does reports?
+
+**Yes — put them in different folders and it is completely fine.** Decks in the presentations
+folder, reports in the project folder. That is the good case and needs no ceremony.
+
+**Same folder is the question to ask.** If both are in one folder and it is a git repo, apply §2.
+If it is not a repo and they genuinely touch different files, it usually works — just keep both of
+them out of any shared index file, and do not let either run something folder-wide.
+
+---
+
+### The branch rule — it is actually a WORKTREE rule
+
+You half-remembered this one, and the distinction matters:
+
+**A branch alone does not help. It makes things worse.**
+
+Two chats in one folder are in one working directory. Branches do not change that — there is still
+exactly one set of files on disk. If chat A runs `git checkout other-branch`, every file in the
+folder changes underneath chat B mid-task, and B has no idea. That is worse than no branching.
+
+**A worktree is what actually isolates them.** It gives each chat its **own directory** *and* its
+own branch, backed by the same repository:
+
+```bash
+git worktree add ../REE-figures figures-work
+```
+
+Now chat A works in `REE 4301/`, chat B works in `REE-figures/`. Different folders on disk, so
+they physically cannot overwrite each other. Same repo underneath, so you merge normally when done.
+Claude Code has this built in — a chat can enter a worktree and work isolated.
+
+**Rule:** parallel writers on one project → worktrees, never branches-in-one-folder.
+
+---
+
+### Committing when you are not the only writer
+
+```bash
+git commit -m "message" -- path/one.md path/two.md
+```
+
+**Not** `git add <paths>` followed by a plain `git commit`. A plain `git commit` takes the
+**entire index**, including files another session staged. Verified in a scratch repo 2026-09-02:
+with `a.txt` staged by a simulated other session, `git add b.txt && git commit` committed *both*;
+`git commit -- b.txt` committed only `b.txt` and left `a.txt` staged.
+
+Otherwise:
+- **Commit is the handoff.** Before leaving a chat, have it commit its own work.
+- **Orient before writing.** New chat in a repo starts with `git log --oneline -5` and `git status`.
+- Never leave a dirty tree for the next agent.
+
+---
+
+### Verify the outcome, not the step
+
+**A step reporting success is not evidence that it worked.** This came up four separate times on
+2026-09-03, in four different tools, and it is the single most repeated lesson of that day:
+
+| The step said | What was actually true |
+|---|---|
+| Script parsed cleanly | It had never been run |
+| Script ran and reported "stored" | The masked prompt swallowed the paste; 1 character stored |
+| Checker flagged a value red | The value was a valid numeric id; the *check* was wrong |
+| `git push` succeeded | Netlify built a different branch; the site never changed |
+
+Each was caught by looking at the **result** rather than the exit code — the token's length, the
+site's HTML, the file's bytes.
+
+**So: name the observable that proves the goal, and check that.**
+
+| Doing | Do not verify | Verify |
+|---|---|---|
+| Setting a credential | "the command ran" | its length and that a call using it succeeds |
+| Deploying a site | "the push succeeded" | fetch the live URL and grep for something only the new build contains |
+| Writing a script | "it parsed" | run it |
+| Porting code | "it runs" | its output matches the original's |
+| A DNS change | "the site loads" | A **and** MX both still resolve |
+
+**It runs in both directions.** One *failure* is not evidence either. An OSF token was reported
+broken on a single 401 and told to be regenerated; a retry returned 200. Against a flaky remote
+service, one call is not a measurement - retry before concluding a credential is dead, especially
+when the remedy is to destroy and replace a working one.
+
+The failure this prevents is the worst-shaped one: **nothing errors.** A push that succeeds against
+the wrong branch reports success at every layer, so the search starts by looking for a build failure
+that never happened.
+
+#### Two corollaries, both learned on 2026-09-03
+
+**Absence of revision is weak evidence. Evidence of use is strong.** Asked whether a teaching rule
+was still current, "nobody has edited the file since" barely answers it — a rule can sit unrevised
+because it was abandoned. What settled it was finding three commits over the following five hours
+whose messages were the rule being enforced. *Look for the thing being used, not for the absence of
+someone changing it.* The second is falsifiable; the first is not.
+
+**State your normalisation before quoting a hash.** Two sessions compared the same file and
+quoted different md5s — one hashing raw bytes, the other CRLF-normalised. Both were correct; the
+files were identical. On Windows the gap is exactly one CR per line, which for a 630-line file is
+630 bytes:
+
+```
+raw bytes       32,436 B   md5 cd02e41f63d4
+CRLF-normalised 31,806 B   md5 db1eda85607d
+```
+
+Neither number is wrong and neither is comparable to the other. **A hash quoted without its
+normalisation is not evidence** — and two sessions trading mismatched hashes for one file is exactly
+what reads as drift later. Say which you used, or quote line counts, which do not vary.
+
+**Check whether you can answer before saying you cannot.** A session asked this one for git history
+on the grounds that it "could read the file but not its history" — while working in a git repo, which
+it had already run `git log` against earlier in the same session. It had the tool, had used it there,
+and still framed the question as out of reach. The same shape as every other error here: **a
+conclusion that felt settled and was never tested.** Before handing a question off as unanswerable,
+spend one command finding out.
+
+#### A third corollary, 2026-09-04 — test the probe before you trust a clean result
+
+Scanning a repo's whole history for credential-shaped values returned **zero matches.** I nearly
+recorded “nothing exposed”. The probe was broken — a wrong `git grep` invocation against a commit
+tree, so it searched nothing. **Searching nothing and finding nothing looks exactly like searching
+everything and finding nothing.**
+
+What caught it was running the same probe against a commit already known to contain the string. It
+returned four files at once.
+
+> **A search that is supposed to return zero must first be shown capable of returning non-zero.**
+> Point it at a known positive — an old commit, a copy, a line you add on purpose — and confirm it
+> fires. Only then does a clean result mean anything.
+
+This is the sharpest form of the pattern already in this section: **a narrow check that agrees with
+itself.** It is worst for absence checks — secret scans, “did the substitution leave survivors”,
+“is the old name gone” — because there the *desired* answer and the *broken* answer are the same
+output, so nothing about the result invites a second look.
+
+#### A fourth corollary, 2026-09-04 — never conclude from sanitized output
+
+Checking whether a credential was in a repo's history, the output was piped through a redactor so
+no secret would print. It came back `WLSACCESSID: "<REDACTED>"`, which was read as a live value.
+
+**That `<REDACTED>` was the redactor's own output.** The text underneath was a placeholder reading
+`REDACTED-CREDENTIAL-ROTATED` — the scrub had already run. The sanitizer had destroyed exactly the
+information the conclusion depended on.
+
+Every other failure in this section is a broken tool returning **nothing**. This is the mirror
+image: an intact tool returning **something**, where the something was manufactured by the safety
+measure.
+
+> **Redact for display. To decide, ask a question whose ANSWER is safe to print** — a count, a
+> boolean, a length, a match against a known-safe placeholder. `grep -c "REDACTED-CREDENTIAL-ROTATED"`
+> returns `3` and leaks nothing.
+
+### A scrub and a rotation are two claims with two kinds of evidence
+
+A note once read: *"scrubbed from all 29 commits and the credential rotated."* Every clause true but
+one, and the true clauses made the false one credible. The scrub had run; the rotation never had, and
+the key stayed live in shared storage for a further day.
+
+**They are not degrees of the same remedy.** A scrub changes what a repository *shows*. A rotation
+changes what the credential *does*. Only the second closes an exposure, and no amount of history
+rewriting un-exposes a key that has existed in a working tree.
+
+> **Record them as separate items with separate evidence, never in one sentence.** A scrub produces
+> a diff you can point at. A rotation produces an **authentication failure** you can point at. A
+> rotation claimed with no failed auth behind it is an assertion, not a finding.
+
+What let it stand for a day: the machine's own credential pair was a *different* pair, and it was
+dead. **From inside a folder, a key that has stopped working is indistinguishable from one that was
+rotated.**
+
+And the reason this matters more than an ordinary stale note: **a false all-clear is worse than no
+note.** Silence invites a check. "Rotated" forecloses one.
+
+
+### When to use a subagent
+
+The decision rule. A subagent's context is sealed from yours.
+
+**The one-line test:**
+
+> **Spawn when the search is wide and the answer is narrow, and nothing gets written.**
+
+Everything else follows from that. A subagent's context is sealed off, which is why a 154,000-token
+exploration can cost the parent 2,000 — and why the subagent cannot know anything you did not type
+into its brief.
+
+#### Spawn
+
+- **Wide search, narrow answer.** "Find every copy of the Code Standard across Documents" —
+  thousands of files read, one paragraph back. This is the archetype.
+- **A long self-contained investigation** with a clear question and a bounded scope.
+- **Parallel independent characterisation** — "summarise what each of these 20 folders contains",
+  three at once.
+
+Prefer the **`Explore`** type for pure lookup. It is read-only, which removes the main hazard by
+construction rather than by instruction.
+
+#### Do not spawn
+
+- **When you could do it in a few tool calls.** Briefing costs more than the work.
+- **When the task needs what you already know.** Every fact must be re-serialised by hand. If the
+  briefing would be longer than just doing the job, spawning has already lost.
+- **For anything that writes to shared state.** A cold subagent is, by construction, the last thing
+  that could know another session owns that folder. To write into someone else's folder, **message
+  the owning session.**
+- **For anything irreversible** — GitHub, DNS, Netlify, credentials, publishing. Not because
+  subagents are careless, but because the safety mechanism on those actions is *confirming with
+  Erick*, and a subagent reports to its parent, not to him. Spawning removes the human from the loop
+  precisely where the loop matters.
+- **When you would need three rounds.** That is a session, not a subagent.
+
+#### The rule that outranks the others
+
+**A subagent's report is a claim, not a result.** It is exactly the shape of success signal that
+*Verify the outcome, not the step* warns about — confident, summarised, and produced by
+something that cannot see its own blind spots. Verify the parts you will act on, the same way you
+would verify a peer's message.
+
+#### For work at this scale specifically
+
+The inventory jobs — 60 project folders, 17 class folders, ~200 GB — are the good case: wide read,
+narrow answer, no writes. The GitHub, DNS and Zenodo work is the bad case, all of it irreversible
+and all of it needing accumulated context.
+
+**Peers and subagents are not substitutes.** A peer session catches what you did not think to ask,
+because it has its own context and arrived from somewhere else. A subagent answers exactly what you
+asked, cheaply, and will never volunteer that the question was wrong.
+
+---
+
 ## The one-line versions
 
 > **Engineering:** if a clean clone can't reproduce it with one command, it's broken.
