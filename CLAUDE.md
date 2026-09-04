@@ -105,7 +105,43 @@ that does not exist.
 **The general rule: use the discriminator that actually distinguishes, and make it sort.** For
 course material that is the term. For runs it is the sequence. For records it is the date.
 
----
+### Published work carries the journal and year
+
+Research repos are named `subject-method` — `lithium-optsc`, `covid-optsc`. **When the work
+accompanies a published paper, append the journal abbreviation and year:**
+
+    lithium-optsc-energies-2024
+    covid-optsc-ffutr-2021
+
+The suffix does two jobs. It signals at a glance that the repo is a **frozen artifact behind a
+publication** rather than active work, and it says **which** publication — which matters when one
+project yields several papers.
+
+**Use the DOI stem as the abbreviation** where one exists (`ffutr` for Frontiers in Future
+Transportation). It is already the canonical short form and needs no lookup, so two people cannot
+invent different abbreviations for the same journal.
+
+**The suffix is only for published work.** Unpublished research keeps plain `subject-method`. A repo
+with no paper takes no journal — **inventing one would assert a publication that does not exist.**
+`houston-covid-gis` carries no suffix because the map was never written up, even though it sits
+under the same award as `covid-optsc-ffutr-2021`.
+
+This **composes with** the other naming rules rather than replacing them: `subject-method` for
+research, `website-` and `gradschool-` prefixes for personal work, the org for lab-era research.
+
+#### Cost of getting it wrong
+
+A repo name freezes **every hosted-notebook badge URL** and **every `pip install git+https://…`
+line** in the repo. A rename redirects the repo URL; it does not redirect anything already copied
+out of it.
+
+**Count both substitutions before renaming, and count them again immediately before running the
+replace.** There are two, and only one looks like a placeholder — `USERNAME` announces itself, while
+the hardcoded repo name sits beside it reading like a real name. Measured in one repo on 2026-09-03:
+62 and 64 occurrences across git-tracked files, against 78 and 80 including compiled bytecode, which
+regenerates and must not be edited. **A replace run against the wrong figure leaves survivors, and
+every survivor is a badge pointing at a repo that does not exist** — which presents as a hosting
+fault, so the search starts in the wrong place.
 
 ---
 
