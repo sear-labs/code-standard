@@ -76,6 +76,37 @@ the rule wins unless overridden explicitly.
 > credential, not amending the commit. This is the one mistake in this document
 > that cannot be undone.
 
+### When the sort key and the readable label disagree, carry both
+
+A name has two jobs: sort correctly for a machine, and read correctly for a person. Words rarely do
+both. `Spring`, `Summer`, `Fall` sort alphabetically into `Fall, Spring, Summer` — which is not the
+order they happen in, so every listing of a multi-term course is wrong and nothing says so.
+
+**Number first for the machine, word second for the person:**
+
+    2026_01_Spring_IE_5301_001
+    2026_06_Summer_IE_5301_001
+    2026_08_Fall_IE_5301_001
+
+Use the **month the term starts**, not an ordinal 01/02/03. The month is real information: it
+survives a term shifting, it matches how the registrar and Canvas already think, and it needs no
+key to interpret. An ordinal is an index into a list somebody has to know.
+
+Neither half is sufficient alone. `2026_01` does not read; `2026_Spring` does not sort.
+
+**Research files take the number alone**, because there is no term and no name anyone uses:
+
+    run045-rev01-leo          zero-padded sequence, where order is the point
+    2026-09-03-slug           ISO date, where chronology is the point
+
+Both sort natively and need no label. Adding a season to research output invents a discriminator
+that does not exist.
+
+**The general rule: use the discriminator that actually distinguishes, and make it sort.** For
+course material that is the term. For runs it is the sequence. For records it is the date.
+
+---
+
 ---
 
 ## Part 2 — Archetypes
@@ -129,6 +160,56 @@ calibration, conditions, software version. `run_all.py` doesn't apply; the
 **Mixed projects are normal.** A + B is common. A + C should be *split* into a
 library repo with real tests and an analysis repo that depends on it — don't make
 one repo satisfy both rigor levels. **A + T is the subject of Part 4.**
+
+## Part 2b — Folders that are not repos
+
+Most project folders should never be repos. Proposal folders are Word, PDF and Excel; git stores
+binaries badly and they bloat history permanently. They still need a shape.
+
+### The organising rule
+
+**Separate what ACCUMULATES from what PERSISTS.**
+
+    00-ADMIN/           the folder's own metadata. Zero-prefixed so it sorts first.
+    code/               PERSISTS  - scripts and models, subfoldered by variant
+    reference/          PERSISTS  - source docs, specs, literature, mappings
+    automation/         PERSISTS  - the things that run the above
+    verification/       PERSISTS  - checks, and evidence they passed
+    2025/  2026/        ACCUMULATES - runs, outputs and deliverables of that year
+    design-history/     ACCUMULATES - superseded work, archived by year, not deleted
+
+The test for any new item: **would you look for this by "when", or by "what"?** A 2025 simulation
+run is found by when. The script that produced it is found by what. They go in different places even
+though they were created the same afternoon.
+
+### State where new work goes, or people will guess
+
+A year folder and a function folder sitting at the same level is ambiguous the moment there is new
+code: does it go in `code/` or in `2026/`? **Answer it in the folder's own README rather than leaving
+it to instinct**, because two people will resolve it differently and both will be reasonable.
+
+The Green Building answer, which generalises: **code lives in `code/`, with the year in the
+subfolder name** — `code/ret-2025/`, `code/treed-opt/`. The year folders hold outputs, never sources.
+
+### `00-ADMIN/` earns the zero
+
+It sorts above everything and holds what governs the folder: the README, the naming standard, the
+inventory, the decisions log. Somebody arriving cold reads that first because it is first.
+
+### When a folder becomes a repo
+
+The line is the same granularity rule as Part 2: **a repo is a unit that is versioned, released and
+cloned together.** Ask whether anyone would ever want this *without the rest of it*.
+
+    Has code that runs, and someone might clone it          -> repo, archetype A
+    Finished outputs - papers, posters, reports             -> stays a folder; deposit to Zenodo
+    Active working files                                    -> stays a folder
+    Binaries over 100 MB                                    -> can never be a repo; GitHub rejects them
+
+A folder can contain a repo — `code/treed-opt/` may be its own repo inside a working folder that is
+not. That is normal, and better than promoting the whole tree to satisfy one subdirectory.
+
+---
 
 ---
 
@@ -416,6 +497,42 @@ it."
 
 - **Tag what you hand out.** Students following a link months later should get the
   version you taught, not the branch you are mid-refactor on.
+
+### Every published repo carries a licence AND a citation
+
+A licence sets the terms of reuse. It does **not** get you cited — MIT requires only that the
+copyright notice travel with the code, and no permissive licence compels a citation. These are two
+mechanisms and a repo meant to be cited needs both.
+
+**LICENSE** — MIT unless the repo has commercial potential, in which case weigh Apache-2.0 for its
+patent grant. UTA encourages open-access models and leaves the choice to the author.
+
+**CITATION.cff** in the repo root. GitHub renders a "Cite this repository" button from it, which is
+the whole point: people cite what is easy to cite, and friction is what stops them, not ethics.
+
+**A "How to cite" section** at the top of the README, with the BibTeX ready to paste.
+
+#### The DOI does not need remembering
+
+Zenodo issues **two** DOIs on a connected repo:
+
+- a **version DOI**, new for every release
+- a **concept DOI**, which always resolves to the latest version and **never changes**
+
+Put the **concept DOI** in `CITATION.cff`. It is correct for the life of the repo, so this is a
+one-time edit and not a per-release chore. The order is forced — you cannot have a DOI before the
+first release:
+
+1. Add `CITATION.cff` with no `doi:` field
+2. Connect the repo in Zenodo, tag a release
+3. Zenodo mints both DOIs
+4. Add the concept DOI to `CITATION.cff` and commit
+5. Never touch it again
+
+For a paper repo, cross-reference both ways: the paper's DOI in `CITATION.cff`, the code's DOI in
+the paper's data-availability statement.
+
+---
 
 ---
 
