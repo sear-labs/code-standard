@@ -2,6 +2,10 @@
 
 The engineering and teaching conventions for the SEAR Lab (Erick C. Jones Jr., IMSE, UT Arlington).
 
+> ### New machine?
+> **[NEW-MACHINE.md](NEW-MACHINE.md)** — a prompt to paste into Claude Code. It sets git's default
+> branch, clones this repo, and adds the pointer to your global `CLAUDE.md` without overwriting it.
+
 **This document is pointed at, never copied.** A project's own `CLAUDE.md` names this repository and
 then adds only what is true of that project, under a heading `Part 11 — This project specifically`:
 
