@@ -192,14 +192,15 @@ every install line in the repo, and those are not corrected by a rename.
 ### Refer to people by surname
 
 **`Jones`, not `Erick`.** In anything another person reads — this standard, a README, a commit
-message, a handoff, a `CITATION.cff` — the surname is what identifies someone to a reader who does
+message, a handoff — the surname is what identifies someone to a reader who does
 not already know them, and it is what every citation format uses. A first name is internal
 shorthand: it reads as familiarity to the people already in the room and as ambiguity to everyone
 else, and a document written in shorthand does not survive being shared.
 
-Where a surname is ambiguous in context — shared surnames are common in academic families and
-research groups — give the full name on first mention and the surname thereafter, rather than
-falling back to the first name.
+**Surname alone — no suffix, no honorific, no first name.** `Jones`, not `Jones Jr.` and not
+`Dr. Jones`. Anyone who needs the full legal form can find it where it belongs: `CITATION.cff`, an
+author line, an ORCID record. Prose does not carry identity metadata, and a document that repeats it
+is doing a job another file already does properly.
 
 ### Published work carries the journal and year
 
