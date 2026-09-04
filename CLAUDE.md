@@ -744,6 +744,56 @@ forty figures after every edit.
 
 ---
 
+### A requirement that lives only in prose has already failed
+
+Written down, a requirement gets read **after** the thing it was meant to prevent. Made to fail, it
+gets read **before**.
+
+Six were recorded as prose across 2026-09-02 to 09-04. Every one was cheap to check. Not one
+announced itself:
+
+| Recorded as prose | What it actually was |
+|---|---|
+| “the portable half is byte-identical to the source” | named no version; wrong for a day |
+| “`credscan` clean over 111 files” | nothing proved the scanner could fire |
+| “substitute `USERNAME`” | the hardcoded repo name beside it was the larger half |
+| “see `CLAUDE.md` Part 4” | that file no longer contained a Part 4 |
+| “the credential was rotated” | it was scrubbed, not rotated; the key stayed live |
+| “the badges point at this repo” | 45 named a branch that did not exist |
+
+> **The moment to check a pre-push requirement is the moment nobody is looking.** A person reads
+> prose when they are already looking, which is after the push.
+
+Turn it into something that fails: a test, an assertion, a CI step. **Commit it red** if the
+condition is not yet met — a suite that stayed green over 45 badges pointing at a nonexistent branch
+was reporting the wrong thing, and making it fail is what turned the requirement from a claim into a
+measurement.
+
+**Guard it against passing vacuously.** A check that finds nothing to check must say so rather than
+report success over an empty set — `assert found, "no badge URLs found at all"`. A search that
+should return zero must first be shown capable of returning non-zero; see Part 12.
+
+#### The address is longer than it looks
+
+`github/<owner>/<repo>/blob/<branch>/<path>` is **four** values. `owner/repo` reads as the whole
+address and is two-thirds of one, which is why the branch stayed invisible in 45 files that were
+otherwise correct. Same shape as the half-placeholder, one segment further right.
+
+**Set the branch once, machine-wide, so it is never a per-repo question:**
+
+    git config --global init.defaultBranch main
+
+Git still defaults to `master` when this is unset, while GitHub, every badge and every tool assume
+`main`. Repos born on GitHub get `main`; repos born from `git init` get `master`. **Nobody chooses
+this**, and it silently splits a lab's repos in half.
+
+**The rename is free before the first push and never again.** With no remote, `git branch -m master
+main` leaves nothing behind, and badges already naming `main` simply start resolving. After a push
+it means renaming a live default branch, which leaves a stale branch that still resolves and serves
+quietly older content.
+
+---
+
 ## Part 7 — Auditing an existing set of notebooks
 
 Measure, don't estimate. These are the checks that pay, roughly in order:
@@ -832,6 +882,11 @@ Before a teaching notebook goes to students:
 - [ ] Deliberate blanks fail with a message, not a traceback.
 - [ ] Seeds set and printed wherever anything is stochastic.
 - [ ] Dependencies pinned with upper bounds; kernel metadata matches what ran.
+- [ ] **Branch checked before the first push** — every badge and install URL names the branch the
+      repo is actually on. Free to fix now; a live rename later.
+- [ ] **Repo name confirmed** — it freezes every badge and install line; a rename does not redirect
+      what has already been copied out.
+- [ ] Each of the two above enforced by something that **fails**, not by a line in the README.
 
 ### The prompt block
 
@@ -1135,6 +1190,28 @@ construction rather than by instruction.
 *Verify the outcome, not the step* warns about — confident, summarised, and produced by
 something that cannot see its own blind spots. Verify the parts you will act on, the same way you
 would verify a peer's message.
+
+### An unattended process reports; it does not write
+
+A scheduled or overnight run has nobody watching it, and that changes what it may safely do.
+
+**The safety mechanism for a write is a person who can see the result and undo it.** At 3am there is
+no such person, so a wrong write stays wrong until someone stumbles on it — and **a scheduled
+session cannot be stopped by the session that scheduled it.** It is not a subagent: no parent, no
+stop signal, no control channel. It is an independent session that happened to be started by a
+timer, and killing it means the user doing it by hand.
+
+So an unattended run gets **read access and produces findings**. A supervised session acts on them.
+
+Learned from a reconciliation task given write authority and told to commit and push. Its prompt did
+guard the one-writer problem — check for live sessions first, downgrade to read-only if any are
+found — but **that protects against collision, not against the two things that actually happen when
+nobody is watching: hanging, and being confidently wrong.** It hung mid-turn for six hours and had
+to be killed from the sidebar. It wrote nothing, by luck rather than by design.
+
+**A subagent is not the alternative.** A subagent lives inside its parent's turn and cannot exist at
+3am, which was the entire requirement. The choice is never subagent versus scheduled task — it is
+what authority the scheduled task is given.
 
 #### For work at this scale specifically
 
