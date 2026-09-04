@@ -63,11 +63,18 @@ the other in the wrong direction.
 
 ```bibtex
 @software{jones_code_teaching_standard,
-  author  = {Jones, Erick C., Jr.},
+  author  = {Jones, Jr., Erick C.},
   title   = {Code and Teaching Standard},
   url     = {https://github.com/sear-labs/code-standard},
   year    = {2026}
 }
 ```
+
+BibTeX reads a three-part name as `Last, Jr, First`, so the suffix goes in the middle field. Written
+as `{Jones, Erick C., Jr.}` it parses the given name as the suffix.
+
+MLA works-cited:
+
+> Jones, Erick C., Jr. *Code and Teaching Standard*. 2026, github.com/sear-labs/code-standard.
 
 See `CITATION.cff`. Licensed MIT — see `LICENSE`.

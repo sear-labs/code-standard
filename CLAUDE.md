@@ -197,10 +197,20 @@ not already know them, and it is what every citation format uses. A first name i
 shorthand: it reads as familiarity to the people already in the room and as ambiguity to everyone
 else, and a document written in shorthand does not survive being shared.
 
-**Surname alone — no suffix, no honorific, no first name.** `Jones`, not `Jones Jr.` and not
-`Dr. Jones`. Anyone who needs the full legal form can find it where it belongs: `CITATION.cff`, an
-author line, an ORCID record. Prose does not carry identity metadata, and a document that repeats it
-is doing a job another file already does properly.
+**In prose, surname alone — no suffix, no honorific, no first name.** `Jones`, not `Jones Jr.`,
+not `Dr. Jones`, not `Erick`. Prose does not carry identity metadata.
+
+**In a citation, the full form including the suffix**, because a citation *is* identity metadata and
+a dropped suffix makes it the wrong person. Follow MLA: `Jones, Erick C., Jr.`
+
+    CITATION.cff   family-names: Jones / given-names: Erick C. / name-suffix: Jr.
+    BibTeX         author = {Jones, Jr., Erick C.}
+    MLA            Jones, Erick C., Jr.
+
+**BibTeX reads a three-part name as `Last, Jr, First`** — the suffix is the *middle* field. Written
+in MLA order, `{Jones, Erick C., Jr.}`, it silently parses the given name as the suffix and the
+suffix as the given name. This is the one place the two formats disagree, and it fails without an
+error.
 
 ### Published work carries the journal and year
 
