@@ -70,6 +70,100 @@ That rule is the load-bearing one. Every rule that went missing in two days went
 document that *summarised* this one instead of naming it, and **a partial restatement is worse than
 no restatement, because it reads as complete and stops the search.**
 
+### Merge policy across the organization
+
+This document's own gate is the tightest in the org and **should not be copied everywhere by
+reflex.** Gate on **how much depends on a repo**, not on what kind of thing it is.
+
+Nobody is a bottleneck by virtue of having created a repo. GitHub permissions are role-based, and
+the protection config is the only thing that decides who lands a change.
+
+| | What a bad merge reaches | Who merges |
+|---|---|---|
+| This standard | every project, forever | Jones only |
+| The teaching library | every course drawing on that topic, every year | Jones only |
+| A published paper repo | one frozen release, plus errata | Jones **and the coauthors** |
+| Active research | the work of everyone on that project | **the project team**, Jones included |
+
+**Jones can merge anywhere** — he owns the organisation, and no table grants or removes that. The
+column says who *else* can, which is the only part that is a decision. A research project with four
+people on it is not gated to whoever ran `git init`.
+
+**The teaching library sits beside this document, not below it.** It is organised by topic rather
+than by course or semester, so one notebook serves several courses across several years and an
+error in it propagates the way a bad rule here would. TAs and students who teach **propose**;
+they do not merge.
+
+**If it consolidates observations about student work it is education-record adjacent**, not merely
+internal. Keep it private, keep names and rosters out of it, and let that decide visibility before
+convenience does.
+
+#### The published-paper case is looser than it looks, deliberately
+
+The instinct is to lock a paper repo read-only. That is backwards. **A Zenodo DOI is minted against
+a tagged release, not a branch**, so the artifact anyone cites is already frozen — locking the
+branch buys nothing and costs the ability to publish errata.
+
+    the release    frozen; this is what is cited
+    the branch     stays open; corrections land here
+    a correction   new tag -> new version DOI; the concept DOI follows it automatically
+
+**A pull request is also the credit mechanism.** Someone who finds a mistake and opens one is
+recorded permanently as the author of that change, which an email is not. Merge it, then credit
+them in the release notes and `CITATION.cff`. **Locking the branch pushes them back to email, where
+the credit evaporates.**
+
+**When a paper repo is genuinely finished, archive it.** GitHub's archive makes the whole repo
+read-only and is reversible. It says *this work is complete* rather than *this branch is defended*,
+and it belongs after the errata window rather than instead of one.
+
+#### Contributions from outside the organisation are safe by construction
+
+**A fork is their copy. A pull request is a proposal against yours.** With `main` protected and the
+author not a collaborator, nothing they do reaches the deployed repo until someone with merge rights
+lands it. Public visibility therefore costs **triage, not safety** — and the asymmetry is heavily
+one-sided: closing a junk PR takes seconds, while a good one is something you would never otherwise
+have received.
+
+So the question is never *“will they break it”*. It is whether the repository should be readable at
+all, which is a separate decision with separate reasons.
+
+#### Which is what actually decides the teaching library: split it
+
+Two different things get called teaching material and they want opposite visibility:
+
+    notebooks, code examples, topic material   public. Takes outside PRs; they cost nothing and
+                                               occasionally find a real error.
+    consolidated observations on student work  private. Education-record adjacent, so no outside
+                                               contribution is wanted and none is possible.
+
+**Keeping them in one repository forces the stricter rule onto both** — the whole library goes
+private to protect the observations, and the notebooks lose every reader and every correction they
+would have attracted. Splitting costs one extra repository and settles the visibility question
+honestly instead of by compromise.
+
+Merge rights do not change either way: Jones only, on both.
+
+#### Blocking is access, not protection
+
+Branch protection decides who **merges**. It does not decide who may push a branch at all — that is
+repository access, and access is the control for keeping casual contributions out.
+
+    not a collaborator   cannot push a branch. On a public repo may still fork and open a PR,
+                         which you are free to close.
+    write collaborator   may push a branch and open a PR; protection still decides the merge.
+    private repo         not visible at all.
+
+So *“regular students should not be committing here”* is answered by **not adding them as
+collaborators**, never by tightening a branch rule.
+
+#### On a free plan, protection is public-repo only
+
+Private repositories cannot be branch-protected without a paid plan. That affects active research,
+which is also the case that least needs gating — the people writing it own it. **Do not make a repo
+public to gain protection it does not need.**
+
+
 ### Setting up a new machine
 
 Two things, once per machine. Nothing is copied and nothing is cloned unless you want the speed.
