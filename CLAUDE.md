@@ -39,7 +39,12 @@ source first.
 
 **Stamp the copy with the source commit.** Part 11 opens with the SHA it was taken from:
 
-    Parts 0-10 are a copy of sear-labs/code-standard at 9f6358c (2026-09-04).
+    Parts 0-10 are a copy of sear-labs/code-standard at <SHA> (<DATE>).
+
+**Those angle brackets are load-bearing.** The stamp is a fact about one copy, so a file still
+reading `<SHA>` is unstamped, and a real-looking SHA written into this example would propagate
+into every copy and read as though each had been stamped. A placeholder that looks like data is
+worse than no example — see Part 8.
 
 Without it a copy can only assert that it is current, which is an assertion that rots silently —
 true when written, and false the moment the source moves, with nothing in the file to say which.
