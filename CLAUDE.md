@@ -27,6 +27,26 @@ code with no tests and unpinned dependencies. **Part 4 is the boundary between
 them and is the most important section here.** If you read nothing else, read
 Part 4.
 
+### How copies of this document work
+
+This file is **dropped into project roots as `CLAUDE.md`** and read automatically. Those copies are
+the portable half; anything true of one project only goes **below** them, under a heading
+`# Part 11 — This project specifically`.
+
+**Syncs run one way: source → copy.** An improvement made in a copy survives exactly until the next
+sync overwrites it, and nothing reports the loss. Amendments are approved and committed at the
+source first.
+
+**Stamp the copy with the source commit.** Part 11 opens with the SHA it was taken from:
+
+    Parts 0-10 are a copy of sear-labs/code-standard at 9f6358c (2026-09-04).
+
+Without it a copy can only assert that it is current, which is an assertion that rots silently —
+true when written, and false the moment the source moves, with nothing in the file to say which.
+With it, `git show <sha>:CLAUDE.md` reconstructs exactly what was copied and the drift is one diff
+away. **This is the whole reason a copy in version control is acceptable and a copy inside a zip is
+not** (Part 8): both go stale, and only one can be asked whether it has.
+
 ---
 
 ## Part 1 — The invariant core
