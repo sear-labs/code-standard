@@ -125,6 +125,29 @@ that does not exist.
 **The general rule: use the discriminator that actually distinguishes, and make it sort.** For
 course material that is the term. For runs it is the sequence. For records it is the date.
 
+### Repository names lead with what the searcher already knows
+
+    research     subject-method       sear-labs/lithium-optsc
+    teaching     method-application   sear-labs/advopt-lithiumsc
+    published    add journal + year   sear-labs/lithium-optsc-energies-2024
+    websites     website-<name>       personal account
+    grad school  gradschool-<name>    personal account
+
+Lab-era research goes under the organization; personal work under the personal account.
+
+**The first two are deliberately inverted, and the inversion is the rule — not the examples.** A
+researcher searches by subject; a student searches by course. Each form leads with the half its
+audience already has in mind, which is why `advopt-lithiumsc` reads backwards beside
+`lithium-optsc` and is nonetheless correct: the student arriving has a course, not a commodity.
+
+**Anyone who “fixes” the teaching form to match the research one has deleted the reason both
+exist.** That is the failure this paragraph is here to prevent, and it is why the reason is written
+down beside the forms rather than left to be inferred from a pair of examples.
+
+**American spelling** — `optimization`, not `optimisation`. Lowercase, hyphen-separated, numbers
+zero-padded. Not a style preference: see the cost below. A name freezes into every badge URL and
+every install line in the repo, and those are not corrected by a rename.
+
 ### Published work carries the journal and year
 
 Research repos are named `subject-method` — `lithium-optsc`, `covid-optsc`. **When the work
@@ -146,8 +169,8 @@ with no paper takes no journal — **inventing one would assert a publication th
 `houston-covid-gis` carries no suffix because the map was never written up, even though it sits
 under the same award as `covid-optsc-ffutr-2021`.
 
-This **composes with** the other naming rules rather than replacing them: `subject-method` for
-research, `website-` and `gradschool-` prefixes for personal work, the org for lab-era research.
+This **composes with** the table above rather than replacing it — the suffix is appended to a name
+already formed by those rules, and a teaching repo behind a paper takes it too.
 
 #### Cost of getting it wrong
 
