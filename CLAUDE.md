@@ -158,6 +158,12 @@ Pick one. Each lists only its **delta** from Part 1.
 | A trained model + metrics | **E** ML sweeps, A plus tracking |
 | Measurements from physical equipment | **F** acquisition |
 | **Something people learn from** | **T** — see Part 3 |
+| **Nothing that runs** — proposals, deliverables, documents | **not a repo** — see Part 2b |
+
+**Answer the last row first.** Most project folders are not repos and should not be given an
+archetype at all; **Part 2b** covers their shape. Reaching for one because the table offers seven
+is how a proposal folder of Word and Excel acquires a `src/` directory and a test suite nobody
+runs.
 
 **A — Batch analysis pipeline** *(default for research code)*
 `config.yaml`, `scenarios/`, `data/{raw,interim,processed}/`, `src/<pkg>/`,
@@ -671,6 +677,10 @@ Flag these on sight:
 - Deferring the README and tests to "after the paper is done."
 - A dashboard that recomputes on every page load.
 - Version control by filename: `script_v2.py`, `module.py.bak`, `final_FINAL/`.
+- **A shared document duplicated into a zip, a deck or a PDF.** A copy there cannot be
+  diffed, gitignored or checked by CI, so it does not merely go stale — nothing can tell
+  you that it has. Ship a pointer to the source instead of a copy. (A `CLAUDE.md` in a repo
+  root is fine: it is plain text in version control, so drift is visible.)
 - Library-grade rigor for a one-off analysis (over-engineering) or analysis-grade
   looseness for a shared library (under-engineering).
 - A helper function above the narration of the same material *(in `notebooks/`)*.
