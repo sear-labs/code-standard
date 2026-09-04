@@ -1,54 +1,73 @@
-# Code Standard — a drop-in kit
+# Code and Teaching Standard
 
-Copy this folder's contents into any new project. Nothing here depends on
-anything outside this folder.
+The engineering and teaching conventions for the SEAR Lab (Erick C. Jones Jr., IMSE, UT Arlington).
 
-## What's here
+**This document is pointed at, never copied.** A project's own `CLAUDE.md` names this repository and
+then adds only what is true of that project, under a heading `Part 11 — This project specifically`:
 
-| File | What to do with it |
+```
+# <Project> conventions
+
+The portable standard governs this repo. Read it before working here:
+  https://github.com/sear-labs/code-standard    canonical - the same from any machine
+  a local clone, if you have one                faster
+
+# Part 11 - This project specifically
+...archetype, data layout, known defects, exemptions...
+```
+
+**Read it first and last.** First because it decides how the work is done; last because a change you
+are about to make may be one it already settles.
+
+## Why pointing rather than copying
+
+Copying is the obvious mechanism — Claude Code loads `CLAUDE.md` automatically and does not load
+this repository, so a drop-in copy guarantees the rules arrive. Measured across two days in
+September 2026, that guarantee cost more than it bought: one project's copy ran 46 lines behind,
+another 28 behind *while appearing stamped with a source version*, and four scaffolding templates
+carried not a stale copy but this document's **predecessor**, a whole generation behind. Nothing
+reported any of it.
+
+A pointer costs one deliberate read, cannot drift, and cannot be edited into a competing authority.
+
+> **A subordinate document may point at this one. It may never restate it** — not a summary, not a
+> quick-reference table. A partial restatement reads as complete and stops the search.
+
+## What is here
+
+| File | |
 |---|---|
-| `CLAUDE.md` | The standard. Copy it to a repo root **as `CLAUDE.md`** — that filename is what Claude Code reads automatically every session. |
+| `CLAUDE.md` | The standard. Read it; do not copy it. |
 | `gitignore-starter` | Rename to `.gitignore` and commit it **first**, before any other file. |
-| `README.md` | This. Don't copy it. |
 
-## Three ways to use the standard
+## The order that matters when starting a project
 
-1. **A code repo** — copy `CLAUDE.md` to the repo root. Append a final
-   "This project specifically" section for the things that are true only there:
-   credentials that must never be committed, licence or runtime limits, which
-   file is the template to copy, known open defects. Everything above that
-   section stays generic, so it can be replaced wholesale when this is updated.
-2. **Every repo on the machine** — put it at `~/.claude/CLAUDE.md`. Note it is
-   ~511 lines; if you already keep environment notes there, keep those separate
-   and reference this instead.
-3. **A non-code chat** — paste it into a Claude Project's custom instructions.
-   For a one-off chat, Part 10's prompt block is the short version.
-
-## Starting a new project
-
-> *"Scaffold this as a [archetype] per CLAUDE.md."*
-
-Pick the archetype from Part 2's table. For a teaching notebook:
-
-> *"Teaching-code style per CLAUDE.md Part 3."*
-
-## The order that matters
-
-Do these in this sequence, because one of them cannot be undone:
+One of these cannot be undone, so the sequence is not cosmetic:
 
 1. `git init`
 2. `cp gitignore-starter .gitignore`, add anything project-specific
-3. **`git check-ignore -v <each secret file>`** — verify, don't assume the
-   pattern matched
+3. **`git check-ignore -v <each secret file>`** — verify the pattern matched; do not assume
 4. `git add . && git status` — read the list before committing
 5. First commit
 
-A credential in git history means rotating the credential, not amending the
-commit. Everything else in the standard is a preference you can revisit later;
-this one isn't.
+**A credential in git history means rotating the credential, not amending the commit.** Everything
+else in the standard is a preference you can revisit; this one is not.
 
 ## If you read only one section
 
-**Part 4.** It is the boundary between the engineering half (Parts 1–2) and the
-teaching half (Part 3), which contradict each other on purpose. Someone who reads
-only one half will confidently refactor the other half in the wrong direction.
+**Part 4** — the boundary between the engineering half (Parts 1–2) and the teaching half (Part 3),
+which contradict each other on purpose. Someone who reads only one half will confidently refactor
+the other in the wrong direction.
+
+## How to cite
+
+```bibtex
+@software{jones_code_teaching_standard,
+  author  = {Jones, Erick C., Jr.},
+  title   = {Code and Teaching Standard},
+  url     = {https://github.com/sear-labs/code-standard},
+  year    = {2026}
+}
+```
+
+See `CITATION.cff`. Licensed MIT — see `LICENSE`.
