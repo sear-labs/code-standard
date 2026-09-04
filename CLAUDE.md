@@ -70,6 +70,69 @@ That rule is the load-bearing one. Every rule that went missing in two days went
 document that *summarised* this one instead of naming it, and **a partial restatement is worse than
 no restatement, because it reads as complete and stops the search.**
 
+### Merge policy across the organization
+
+This document's own gate is the tightest in the org and **should not be copied everywhere by
+reflex.** Gate on **how much depends on a repo**, not on what kind of thing it is.
+
+Nobody is a bottleneck by virtue of having created a repo. GitHub permissions are role-based, and
+the protection config is the only thing that decides who lands a change.
+
+| | What a bad merge reaches | Who merges |
+|---|---|---|
+| This standard | every project, forever | Jones only |
+| The teaching library | every course drawing on that topic, every year | Jones only |
+| A published paper repo | one frozen release, plus errata | Jones or a maintainer |
+| Active research | the student's own work | whoever owns it |
+
+**The teaching library sits beside this document, not below it.** It is organised by topic rather
+than by course or semester, so one notebook serves several courses across several years and an
+error in it propagates the way a bad rule here would. TAs and students who teach **propose**;
+they do not merge.
+
+**If it consolidates observations about student work it is education-record adjacent**, not merely
+internal. Keep it private, keep names and rosters out of it, and let that decide visibility before
+convenience does.
+
+#### The published-paper case is looser than it looks, deliberately
+
+The instinct is to lock a paper repo read-only. That is backwards. **A Zenodo DOI is minted against
+a tagged release, not a branch**, so the artifact anyone cites is already frozen — locking the
+branch buys nothing and costs the ability to publish errata.
+
+    the release    frozen; this is what is cited
+    the branch     stays open; corrections land here
+    a correction   new tag -> new version DOI; the concept DOI follows it automatically
+
+**A pull request is also the credit mechanism.** Someone who finds a mistake and opens one is
+recorded permanently as the author of that change, which an email is not. Merge it, then credit
+them in the release notes and `CITATION.cff`. **Locking the branch pushes them back to email, where
+the credit evaporates.**
+
+**When a paper repo is genuinely finished, archive it.** GitHub's archive makes the whole repo
+read-only and is reversible. It says *this work is complete* rather than *this branch is defended*,
+and it belongs after the errata window rather than instead of one.
+
+#### Blocking is access, not protection
+
+Branch protection decides who **merges**. It does not decide who may push a branch at all — that is
+repository access, and access is the control for keeping casual contributions out.
+
+    not a collaborator   cannot push a branch. On a public repo may still fork and open a PR,
+                         which you are free to close.
+    write collaborator   may push a branch and open a PR; protection still decides the merge.
+    private repo         not visible at all.
+
+So *“regular students should not be committing here”* is answered by **not adding them as
+collaborators**, never by tightening a branch rule.
+
+#### On a free plan, protection is public-repo only
+
+Private repositories cannot be branch-protected without a paid plan. That affects active research,
+which is also the case that least needs gating — the people writing it own it. **Do not make a repo
+public to gain protection it does not need.**
+
+
 ### Setting up a new machine
 
 Two things, once per machine. Nothing is copied and nothing is cloned unless you want the speed.
