@@ -70,6 +70,36 @@ That rule is the load-bearing one. Every rule that went missing in two days went
 document that *summarised* this one instead of naming it, and **a partial restatement is worse than
 no restatement, because it reads as complete and stops the search.**
 
+### Setting up a new machine
+
+Two things, once per machine. Nothing is copied and nothing is cloned unless you want the speed.
+
+**1. Make `git init` agree with everything else:**
+
+    git config --global init.defaultBranch main
+
+**2. Put the pointer in that machine's `~/.claude/CLAUDE.md`** — the file that loads in every
+session in every folder, and so the only thing guaranteed to be read:
+
+    # THE RULES ARE NOT IN THIS FILE
+    # This file holds facts about THIS MACHINE. It holds no portable rules, deliberately.
+    #
+    # Every rule lives in one document:
+    #     https://github.com/sear-labs/code-standard   canonical, public - no clone, no auth
+    #
+    # Read it first and last. Do not restate it here or anywhere else.
+
+**Optionally** clone it for speed or offline use — a clone is a convenience, never the address:
+
+    git clone https://github.com/sear-labs/code-standard.git
+
+That machine's `~/.claude/CLAUDE.md` then holds **only facts about that machine**: interpreter
+paths, tool versions, which credentials are set, connector state. None of that is portable, so none
+of it belongs here — and no rule belongs there.
+
+**Nothing else is brought down.** The repository is read, not distributed. If a machine has the URL
+it has the standard.
+
 ### Governance: how this document changes
 
 **It is the only document that binds.** Notes record reasoning, briefings stage text, project files
@@ -87,6 +117,17 @@ have settled.)*
 
 **Nothing is adopted without Jones's explicit approval.** A peer session cannot authorise an
 amendment, and neither can this document's own reasoning.
+
+**Read access is public; write access is not.** Anyone, on any machine, reads this without a clone
+or a token. Pushing is restricted to named collaborators. **That asymmetry is the control** —
+everyone works from the same document and nobody edits it in passing.
+
+**From outside, a pull request is the petition** — same floor, same approval, and it does not merge
+itself. A PR is a proposal with a diff attached, not a change.
+
+**Never edit a clone to fix a problem.** The edit survives until the next `git pull` and then
+vanishes with nothing reporting the loss — the same failure as the drop-in copies this document
+replaced, one level up.
 
 ---
 
