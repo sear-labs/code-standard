@@ -36,14 +36,20 @@ true of that project alone:
     # <Project> conventions
 
     The portable standard governs this repo. Read it before working here:
-      Documents/Classes/Code Standard/CLAUDE.md      local working copy, git pull to update
-      https://github.com/sear-labs/code-standard     source
+      https://github.com/sear-labs/code-standard    canonical - same from any machine
+      a local clone, if you have one                faster; on the UTA desktop that is
+                                                    Documents\Classes\Code Standard\
 
     # Part 11 - This project specifically
     ...archetype, data layout, known defects, exemptions...
 
 **Read it first and last.** First, because the rules here decide how the work is done. Last,
 because a change you are about to make may be one this document already settles.
+
+**Lead with the URL, not with a path.** An absolute path is true of one machine and silently wrong
+on every other, so it must never be the only pointer. The repository URL is the reference that
+travels — to a laptop, to a collaborator, to a session running somewhere else. Name a local clone
+as a convenience underneath it, never as the address.
 
 #### Why a pointer and not a drop-in copy
 
@@ -79,7 +85,7 @@ twice by one. Below that it is friction, not a pattern, and a standard that grow
 grows by accretion. *(Set at two on 2026-09-04, to be revisited at three once the current rules
 have settled.)*
 
-**Nothing is adopted without Erick's explicit approval.** A peer session cannot authorise an
+**Nothing is adopted without Jones's explicit approval.** A peer session cannot authorise an
 amendment, and neither can this document's own reasoning.
 
 ---
@@ -182,6 +188,18 @@ down beside the forms rather than left to be inferred from a pair of examples.
 **American spelling** — `optimization`, not `optimisation`. Lowercase, hyphen-separated, numbers
 zero-padded. Not a style preference: see the cost below. A name freezes into every badge URL and
 every install line in the repo, and those are not corrected by a rename.
+
+### Refer to people by surname
+
+**`Jones`, not `Erick`.** In anything another person reads — this standard, a README, a commit
+message, a handoff, a `CITATION.cff` — the surname is what identifies someone to a reader who does
+not already know them, and it is what every citation format uses. A first name is internal
+shorthand: it reads as familiarity to the people already in the room and as ambiguity to everyone
+else, and a document written in shorthand does not survive being shared.
+
+Where a surname is ambiguous in context — shared surnames are common in academic families and
+research groups — give the full name on first mention and the surname thereafter, rather than
+falling back to the first name.
 
 ### Published work carries the journal and year
 
@@ -1096,7 +1114,7 @@ construction rather than by instruction.
   the owning session.**
 - **For anything irreversible** — GitHub, DNS, Netlify, credentials, publishing. Not because
   subagents are careless, but because the safety mechanism on those actions is *confirming with
-  Erick*, and a subagent reports to its parent, not to him. Spawning removes the human from the loop
+  Jones*, and a subagent reports to its parent, not to him. Spawning removes the human from the loop
   precisely where the loop matters.
 - **When you would need three rounds.** That is a session, not a subagent.
 
