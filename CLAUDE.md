@@ -129,6 +129,28 @@ itself. A PR is a proposal with a diff attached, not a change.
 vanishes with nothing reporting the loss — the same failure as the drop-in copies this document
 replaced, one level up.
 
+#### How this is enforced, not merely agreed
+
+`main` is a protected branch:
+
+    every change goes through a pull request      including Jones's own
+    only Jones may merge to main                  others open PRs; they cannot land them
+    force pushes and branch deletion              blocked
+
+**The merge restriction is the gate — not the approval count.** GitHub lets anyone with read
+access submit an approving review and that cannot be turned off, so approvals are set to zero and
+made irrelevant. One collaborator approving another's pull request changes nothing, because
+approval is not what lands it.
+
+Approvals stay at zero for a second reason: **GitHub refuses to let anyone approve their own pull
+request.** Requiring even one approval would permanently deadlock a sole maintainer on their own
+amendments.
+
+So the pull request is a **rate limiter and a record**, and the merge restriction is the
+authorisation. The first is what stops a run of small changes going in one at a time, each one
+quietly invalidating the last — which is how most of the errors in this document's own history were
+made, and then found.
+
 ---
 
 ## Part 1 — The invariant core
