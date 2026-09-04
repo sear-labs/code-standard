@@ -357,6 +357,31 @@ else, and a document written in shorthand does not survive being shared.
 **In prose, surname alone — no suffix, no honorific, no first name.** `Jones`, not `Jones Jr.`,
 not `Dr. Jones`, not `Erick`. Prose does not carry identity metadata.
 
+**When surname alone does not identify one person, escalate — but only as far as it takes.** The
+disambiguator differs by case, and reaching for the wrong one does not work:
+
+1. **Surname alone.** `Conlin`. The default, and correct wherever only one person in the document
+   carries that surname.
+2. **Initial and surname** — two people sharing a surname but not a given name. `G. Conlin` and
+   `J. Conlin`, never `Guillermo` and `John`. **If the initials collide too**, use the full given
+   name — `John Conlin` and `Jane Conlin` — and only then.
+3. **Surname and generational suffix** — two people sharing the surname *and* the given name, where
+   an initial disambiguates nothing. `Jones Sr.` and `Jones Jr.` **Not** `E. C. Jones Jr.`: the
+   suffix is doing the work, the initials are noise, and the combined form reads as a citation that
+   has fallen into a sentence.
+4. **The one name you have** — when only one is known. `Bryan`, if that is genuinely all the source
+   carries. **Never invent the missing half:** a guessed surname is a misidentification that looks
+   authoritative, which is worse than a name that is visibly partial. Say once that it is partial
+   — *“Bryan (surname not recorded in the source documents)”* — so a bare first name among
+   surnames reads as a limit of the record rather than as familiarity.
+
+**Escalation is scoped to the document, not to the person.** A paper with one Conlin in it uses
+`Conlin`; a roster listing both uses `G. Conlin` and `J. Conlin`. **The same person is written
+differently in two documents, and that is correct** — the rule serves the reader in front of the
+document, not a global registry.
+
+**This governs prose only.** The citation rule below is unchanged.
+
 **In a citation, the full form including the suffix**, because a citation *is* identity metadata and
 a dropped suffix makes it the wrong person. Follow MLA: `Jones, Erick C., Jr.`
 
