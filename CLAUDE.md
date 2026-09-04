@@ -82,8 +82,12 @@ the protection config is the only thing that decides who lands a change.
 |---|---|---|
 | This standard | every project, forever | Jones only |
 | The teaching library | every course drawing on that topic, every year | Jones only |
-| A published paper repo | one frozen release, plus errata | Jones or a maintainer |
-| Active research | the student's own work | whoever owns it |
+| A published paper repo | one frozen release, plus errata | Jones **and the coauthors** |
+| Active research | the work of everyone on that project | **the project team**, Jones included |
+
+**Jones can merge anywhere** — he owns the organisation, and no table grants or removes that. The
+column says who *else* can, which is the only part that is a decision. A research project with four
+people on it is not gated to whoever ran `git init`.
 
 **The teaching library sits beside this document, not below it.** It is organised by topic rather
 than by course or semester, so one notebook serves several courses across several years and an
@@ -112,6 +116,33 @@ the credit evaporates.**
 **When a paper repo is genuinely finished, archive it.** GitHub's archive makes the whole repo
 read-only and is reversible. It says *this work is complete* rather than *this branch is defended*,
 and it belongs after the errata window rather than instead of one.
+
+#### Contributions from outside the organisation are safe by construction
+
+**A fork is their copy. A pull request is a proposal against yours.** With `main` protected and the
+author not a collaborator, nothing they do reaches the deployed repo until someone with merge rights
+lands it. Public visibility therefore costs **triage, not safety** — and the asymmetry is heavily
+one-sided: closing a junk PR takes seconds, while a good one is something you would never otherwise
+have received.
+
+So the question is never *“will they break it”*. It is whether the repository should be readable at
+all, which is a separate decision with separate reasons.
+
+#### Which is what actually decides the teaching library: split it
+
+Two different things get called teaching material and they want opposite visibility:
+
+    notebooks, code examples, topic material   public. Takes outside PRs; they cost nothing and
+                                               occasionally find a real error.
+    consolidated observations on student work  private. Education-record adjacent, so no outside
+                                               contribution is wanted and none is possible.
+
+**Keeping them in one repository forces the stricter rule onto both** — the whole library goes
+private to protect the observations, and the notebooks lose every reader and every correction they
+would have attracted. Splitting costs one extra repository and settles the visibility question
+honestly instead of by compromise.
+
+Merge rights do not change either way: Jones only, on both.
 
 #### Blocking is access, not protection
 
