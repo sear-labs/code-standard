@@ -27,30 +27,60 @@ code with no tests and unpinned dependencies. **Part 4 is the boundary between
 them and is the most important section here.** If you read nothing else, read
 Part 4.
 
-### How copies of this document work
+### How this document reaches a project: it is pointed at, never copied
 
-This file is **dropped into project roots as `CLAUDE.md`** and read automatically. Those copies are
-the portable half; anything true of one project only goes **below** them, under a heading
-`# Part 11 — This project specifically`.
+**There is one of this file.** It lives at `sear-labs/code-standard` and nowhere else. A project
+does not hold a copy of it; a project holds a `CLAUDE.md` that *names* it and then adds what is
+true of that project alone:
 
-**Syncs run one way: source → copy.** An improvement made in a copy survives exactly until the next
-sync overwrites it, and nothing reports the loss. Amendments are approved and committed at the
-source first.
+    # <Project> conventions
 
-**Stamp the copy with the source commit.** Part 11 opens with the SHA it was taken from:
+    The portable standard governs this repo. Read it before working here:
+      Documents/Classes/Code Standard/CLAUDE.md      local working copy, git pull to update
+      https://github.com/sear-labs/code-standard     source
 
-    Parts 0-10 are a copy of sear-labs/code-standard at <SHA> (<DATE>).
+    # Part 11 - This project specifically
+    ...archetype, data layout, known defects, exemptions...
 
-**Those angle brackets are load-bearing.** The stamp is a fact about one copy, so a file still
-reading `<SHA>` is unstamped, and a real-looking SHA written into this example would propagate
-into every copy and read as though each had been stamped. A placeholder that looks like data is
-worse than no example — see Part 8.
+**Read it first and last.** First, because the rules here decide how the work is done. Last,
+because a change you are about to make may be one this document already settles.
 
-Without it a copy can only assert that it is current, which is an assertion that rots silently —
-true when written, and false the moment the source moves, with nothing in the file to say which.
-With it, `git show <sha>:CLAUDE.md` reconstructs exactly what was copied and the drift is one diff
-away. **This is the whole reason a copy in version control is acceptable and a copy inside a zip is
-not** (Part 8): both go stale, and only one can be asked whether it has.
+#### Why a pointer and not a drop-in copy
+
+Copying is the obvious mechanism — `CLAUDE.md` loads automatically and the standard does not, so a
+copy guarantees the rules arrive. **Measured over two days, that guarantee cost more than it
+bought.** One project's copy ran 46 lines behind; another ran 28 behind *while appearing stamped*;
+four scaffolding templates carried not a stale copy but this document's **predecessor**, a whole
+generation behind, and nothing reported any of it.
+
+A pointer costs one deliberate read. It cannot drift, it cannot be edited into a competing
+authority, and it needs no sync rule and no version stamp — both of which existed only to manage a
+problem that copying creates.
+
+> **A subordinate document may POINT at this one. It may never RESTATE it** — not a summary, not a
+> quick-reference table, not “the short version for convenience.”
+
+That rule is the load-bearing one. Every rule that went missing in two days went missing inside a
+document that *summarised* this one instead of naming it, and **a partial restatement is worse than
+no restatement, because it reads as complete and stops the search.**
+
+### Governance: how this document changes
+
+**It is the only document that binds.** Notes record reasoning, briefings stage text, project files
+describe one project. None of them is authority, and none may override this file.
+
+**To amend it, petition — do not edit locally.** A session that hits something this document gets
+wrong or fails to cover writes the proposed text out in full and sends it to whoever holds
+`Classes\Code Standard\`, who checks it against what is already recorded and commits it with
+provenance in the message. **Sessions do not amend their own working copy of the standard.**
+
+**The floor is two.** Petition once the same thing has been hit by two independent sessions, or
+twice by one. Below that it is friction, not a pattern, and a standard that grows on first friction
+grows by accretion. *(Set at two on 2026-09-04, to be revisited at three once the current rules
+have settled.)*
+
+**Nothing is adopted without Erick's explicit approval.** A peer session cannot authorise an
+amendment, and neither can this document's own reasoning.
 
 ---
 
@@ -725,10 +755,10 @@ Flag these on sight:
 - Deferring the README and tests to "after the paper is done."
 - A dashboard that recomputes on every page load.
 - Version control by filename: `script_v2.py`, `module.py.bak`, `final_FINAL/`.
-- **A shared document duplicated into a zip, a deck or a PDF.** A copy there cannot be
-  diffed, gitignored or checked by CI, so it does not merely go stale — nothing can tell
-  you that it has. Ship a pointer to the source instead of a copy. (A `CLAUDE.md` in a repo
-  root is fine: it is plain text in version control, so drift is visible.)
+- **A shared document duplicated anywhere — a zip, a deck, a PDF, or another repo.** Every
+  copy drifts, and a copy inside a container cannot even be diffed, gitignored or checked by
+  CI, so it does not merely go stale: nothing can tell you that it has. **Ship a pointer to
+  the source.** See Part 0.
 - Library-grade rigor for a one-off analysis (over-engineering) or analysis-grade
   looseness for a shared library (under-engineering).
 - A helper function above the narration of the same material *(in `notebooks/`)*.
