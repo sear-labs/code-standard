@@ -21,8 +21,16 @@ The standard is ONE document, public, and is POINTED AT — never copied:
 
 Do these four things. Verify each by its RESULT, not by the command exiting cleanly.
 
-1. Read the standard, then read Part 0 in full — it governs everything below:
+1. Read the WHOLE standard, once, now — all of it, not only the parts named here:
    https://raw.githubusercontent.com/sear-labs/code-standard/main/CLAUDE.md
+
+   It is one document on purpose and its halves contradict each other on purpose, so
+   reading a section in isolation is how people confidently do the wrong thing.
+
+   Two parts matter most on a first read. **Part 0** governs steps 2-4 below and explains
+   why nothing is copied. **Part 4** is the one the standard itself says to read if you
+   read nothing else. After today, "read it first and last" applies every time you work
+   in a project folder — not just at setup.
 
 2. Make git agree with every convention around it:
        git config --global init.defaultBranch main
