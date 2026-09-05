@@ -965,6 +965,38 @@ Three rules follow from that list:
 
 ---
 
+#### A check must be shown to fail
+
+**A guard that has only ever passed is indistinguishable from one that cannot fail.**
+
+The dependency guard above was written *because* an undeclared import shipped — and it passed from
+the day it was written while hardcoding the very list it checked against, so it would have missed
+exactly the change it existed to catch. Nothing about a green run said so.
+
+**Prove it fires: inject the original defect, watch the check fail, restore, watch it pass.**
+
+    AssertionError: imported but not declared in pyproject.toml: ipython (model.py).
+      Either add it to [project] dependencies or remove the import.
+
+That is a measurement. A green suite on its own is not.
+
+This is *test the probe before you trust a clean result* (Part 12) in a second setting — there a
+search that should return zero, here a test that should pass. **Both are instruments whose negative
+result means nothing until they have produced a positive one.**
+
+Two traps specific to guards of this kind, both found while fixing the one above:
+
+- **A conditional import silently deletes the guard.** `tomllib` is standard library from 3.11 and
+  these repos declare `>=3.10`. `pytest.importorskip` is the reflex and is **wrong**: on 3.10 it
+  skips the test and reports green — this rule's own failure mode wearing a different hat. Declare
+  the backport, `tomli; python_version < '3.11'`, so the check always runs.
+- **A distribution name is not always the module it installs.** `scikit-learn` installs `sklearn`.
+  A name comparison will quietly pass an undeclared import the day someone adds a package where the
+  two differ. Record it as a known limit and add an explicit map — **do not loosen the check to
+  accommodate it.**
+
+---
+
 ### A requirement that lives only in prose has already failed
 
 Written down, a requirement gets read **after** the thing it was meant to prevent. Made to fail, it
@@ -1111,6 +1143,7 @@ Before a teaching notebook goes to students:
 - [ ] **The badge was clicked** — or its equivalent run: a fresh clone from GitHub, into a clean
       environment, every cell executed. Compiling and a green suite do not cover this.
 - [ ] No `capture_output=True` that prints only one stream.
+- [ ] **Every guard has been watched to fail** — defect injected, check red, restored, check green.
 
 ### The prompt block
 
