@@ -926,6 +926,45 @@ forty figures after every edit.
 
 ---
 
+### The published path is not the path you develop on
+
+> **A check that only ever runs where the code already lives will pass forever while the published
+> path is broken.**
+
+Measured 2026-09-05: three published repositories carried an *Open In Colab* badge pointing at a
+notebook that **could never have run.** Every cell had been compiled and every suite passed.
+Neither check touches what a stranger does.
+
+Compiling proves a cell parses. A suite imports the package from a **source checkout**, where the
+data already sits in the right place. The published route — install into a fresh interpreter, then
+read data — had never once been executed.
+
+Five defects, every one invisible to a passing suite:
+
+| Defect | Why the suite missed it |
+|---|---|
+| `pip install git+https://…` ships the package, not `data/` | a data directory at the repo root is not package data and is not in the wheel |
+| `Path(__file__).resolve().parents[2]` | correct only in a source checkout; from site-packages it lands on `Lib/`, so the error reads like a corrupt download |
+| a relative `"../scripts/run_all.py"` | resolves outside the repo the moment the notebook runs from anywhere but its own folder |
+| `subprocess.run(capture_output=True)` printing only `.stdout` | swallows stderr; a failing script printed one empty line and looked like it had done nothing |
+| an undeclared dependency | `from IPython.display import Image`, unused, surviving a notebook extraction — invisible on Colab, which ships IPython, and fatal anywhere else |
+
+**Before a badge ships, clone the repository from GitHub into a clean environment and execute every
+cell.** It is the only check that walks the path a reader walks.
+
+Three rules follow from that list:
+
+- **Never `capture_output=True` while printing only `.stdout`.** Print both streams and the return
+  code, or do not capture. That one hid another defect for a full day.
+- **Derive paths from the installed package, never from the working directory** or from `__file__`
+  walking upward. The two differ only off the development machine, which is where nobody looks.
+- **Guard the dependency list with a test that parses imports** and fails on anything not declared
+  in `pyproject.toml` or the standard library. **Scan, do not import** — importing may execute the
+  model. And **read `pyproject.toml` rather than restating its list inside the test**: a restated
+  list is a second copy that nothing compares, so the guard against drift drifts first.
+
+---
+
 ### A requirement that lives only in prose has already failed
 
 Written down, a requirement gets read **after** the thing it was meant to prevent. Made to fail, it
@@ -1069,6 +1108,9 @@ Before a teaching notebook goes to students:
 - [ ] **Repo name confirmed** — it freezes every badge and install line; a rename does not redirect
       what has already been copied out.
 - [ ] Each of the two above enforced by something that **fails**, not by a line in the README.
+- [ ] **The badge was clicked** — or its equivalent run: a fresh clone from GitHub, into a clean
+      environment, every cell executed. Compiling and a green suite do not cover this.
+- [ ] No `capture_output=True` that prints only one stream.
 
 ### The prompt block
 
