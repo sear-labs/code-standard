@@ -406,9 +406,43 @@ The suffix does two jobs. It signals at a glance that the repo is a **frozen art
 publication** rather than active work, and it says **which** publication — which matters when one
 project yields several papers.
 
-**Use the DOI stem as the abbreviation** where one exists (`ffutr` for Frontiers in Future
-Transportation). It is already the canonical short form and needs no lookup, so two people cannot
-invent different abbreviations for the same journal.
+**Never invent the abbreviation — look it up.** Two people inventing one for the same venue is the
+failure this prevents, so every route below ends at an authority.
+
+**1. The DOI stem, where the publisher encodes an alphabetic one.** Elsevier's `j.<code>` and
+Frontiers' `f<code>` do:
+
+    10.1016/j.scs.2020.102515     -> scs
+    10.3389/ffutr.2021.652185     -> ffutr
+
+**Springer, IEEE and Wiley encode a numeric journal id instead**, and the stem is unusable there:
+`10.1007/s10669-021-09838-8` is Springer's journal **number** 10669, not an abbreviation. The rule's
+original example happened to be a publisher where the stem works, which is why this gap stayed
+invisible.
+
+**2. Otherwise, Crossref's `short-container-title`, reduced to initials** — lowercased, dropping
+articles and conjunctions:
+
+    https://api.crossref.org/works/<doi>   ->  message.short-container-title
+
+    "Environ Syst Decis"                  ->  esd
+    "Sustainable Cities and Society"      ->  scs
+
+**Reduce to initials rather than to the string itself, because Crossref returns whatever the
+publisher deposited** — sometimes the ISO-4 abbreviation, sometimes the full title. The two examples
+above are one of each. Initials give the same answer either way, and `scs` derived this way matches
+Elsevier's own DOI stem, which is the check that the fallback agrees with rule 1.
+
+**3. No DOI at all — use the venue's own acronym.** Conference proceedings are frequently not
+DOI-registered, and a conference *is* known by its acronym, so the acronym is the authority rather
+than something derived from it:
+
+    IISE Annual Conference 2020   ->  der-decomp-iise-2020
+
+**The discriminator is *published*, not *has a DOI*.** A DOI test has a false negative: a
+peer-reviewed conference paper at a venue that does not register DOIs fails it for a reason that has
+nothing to do with its status, and would be filed as coursework beside a homework assignment. Where
+a published work has no DOI, rule 3 above carries the suffix.
 
 **The suffix is only for published work.** Unpublished research keeps plain `subject-method`. A repo
 with no paper takes no journal — **inventing one would assert a publication that does not exist.**
