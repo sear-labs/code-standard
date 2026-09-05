@@ -37,8 +37,7 @@ true of that project alone:
 
     The portable standard governs this repo. Read it before working here:
       https://github.com/sear-labs/code-standard    canonical - same from any machine
-      a local clone, if you have one                faster; on the UTA desktop that is
-                                                    Documents\Classes\Code Standard\
+      a local clone, if you have one                faster; e.g. C:\Users\<you>\repos\code-standard
 
     # Part 11 - This project specifically
     ...archetype, data layout, known defects, exemptions...
@@ -50,6 +49,24 @@ because a change you are about to make may be one this document already settles.
 on every other, so it must never be the only pointer. The repository URL is the reference that
 travels — to a laptop, to a collaborator, to a session running somewhere else. Name a local clone
 as a convenience underneath it, never as the address.
+
+**Clone outside any syncing folder.** On Windows, Known Folder Move redirects `Documents` and
+`Desktop` into OneDrive, so a path beginning `Documents\` **is** a synced path while reading as a
+safe default. A `.git` tree under a second syncing system is the hazard, and the example above used
+to model exactly what it warns against.
+
+**A clone can be clean and still wrong.** A working copy sitting on a feature branch reads exactly
+like this document — same filename, same path, no warning — while serving text nobody has approved.
+Observed 2026-09-05: the maintainer's own working copy sat on a branch at 1,492 lines against
+`main`'s 1,417, with a clean tree, presenting **75 lines of unadopted text as adopted.**
+
+So the branch is part of the address, and this is the same defect as `owner/repo` reading as a whole
+URL when it is two-thirds of one:
+
+    owner / repo / branch / path
+
+**Check the branch before you quote a clone**, and pull after. A convenience is only a convenience
+while it matches; the moment it does not, it is an authority that disagrees with the authority.
 
 #### Why a pointer and not a drop-in copy
 
@@ -208,6 +225,10 @@ provenance in the message. **Sessions do not amend their own working copy of the
 twice by one. Below that it is friction, not a pattern, and a standard that grows on first friction
 grows by accretion. *(Set at two on 2026-09-04, to be revisited at three once the current rules
 have settled.)*
+
+**The floor governs new rules, not corrections.** Two sightings are the bar for *adding* something.
+A document that contradicts itself, or states a rule incompletely, is a **defect** — fix it on one
+sighting. Requiring a second is how a known contradiction survives to be found twice.
 
 **Nothing is adopted without Jones's explicit approval.** A peer session cannot authorise an
 amendment, and neither can this document's own reasoning.
