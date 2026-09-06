@@ -239,6 +239,18 @@ the credit evaporates.**
 read-only and is reversible. It says *this work is complete* rather than *this branch is defended*,
 and it belongs after the errata window rather than instead of one.
 
+**In the paper, the VERSION DOI. In `CITATION.cff`, the concept DOI.** They are different
+requests and the difference only appears later. `CITATION.cff` answers *how do I cite this
+software* - which should follow corrections, so the concept DOI is right and never needs
+touching. A data-availability statement answers *what produced these numbers* - which must not
+follow corrections, because the paper's numbers came from one version and a corrected repo
+produces others.
+
+Since this repo stays unlocked precisely so errata can land, that drift is not hypothetical:
+it is the intended behaviour of the policy. A paper naming the concept DOI resolves, forever,
+to code that no longer matches it - and it resolves successfully, which is why nothing reports
+it.
+
 #### Contributions from outside the organisation are safe by construction
 
 **A fork is their copy. A pull request is a proposal against yours.** With `main` protected and the
@@ -372,6 +384,14 @@ approval is not what lands it.
 Approvals stay at zero for a second reason: **GitHub refuses to let anyone approve their own pull
 request.** Requiring even one approval would permanently deadlock a sole maintainer on their own
 amendments.
+
+**Approvals stay at zero; "somebody else read it" does not.** The two are different claims and
+only the first is a GitHub setting. Where the table above gives merge rights to more than one
+person, **a change is merged by someone other than its author** - not because an approval
+authorises it, but because the value of review was never in the count. Where merge rights rest
+with one person, that is impossible and the honest position is to say so rather than to
+configure a requirement that would deadlock: a sole maintainer's protection is the pull request
+as a rate limiter and a record, which is what this section already says it is.
 
 So the pull request is a **rate limiter and a record**, and the merge restriction is the
 authorisation. The first is what stops a run of small changes going in one at a time, each one
@@ -520,6 +540,17 @@ down beside the forms rather than left to be inferred from a pair of examples.
 **American spelling** — `optimization`, not `optimisation`. Lowercase, hyphen-separated, numbers
 zero-padded. Not a style preference: see the cost below. A name freezes into every badge URL and
 every install line in the repo, and those are not corrected by a rename.
+
+**Because the two forms invert, neither is findable by the other audience's search.** That is
+the price of the inversion and it is paid in the organisation's repo list, where both forms
+sit together. **Pay it with metadata, never with a rename** — a rename breaks every badge and
+install line already copied out, and a topic breaks nothing:
+
+    every repo carries topics naming BOTH halves    lithium, optimization, teaching
+    and a one-line description leading with the other form's key term
+
+A topic is editable forever; a name is not. This is the one place where the cheap fix and the
+expensive fix are not the same shape.
 
 ### Refer to people by surname
 
@@ -1096,6 +1127,13 @@ already knows what it contains.
   tidy and it makes every subsequent cell a lookup rather than a decision.
 - **Never put the abstraction before the thing it abstracts.**
 
+This is not a house preference. It is the **expertise reversal effect**: guidance that helps
+a novice becomes redundant, and then actively harmful, as the learner's own schema forms.
+Worked examples beat unguided problem-solving for novices and the advantage reverses with
+expertise - which is exactly why the streamlined version belongs at the bottom rather than
+nowhere, and why a style guide written for working engineers is correct for its reader and
+wrong for this one.
+
 ### The inversion — check for this first
 
 A notebook opens with a large helper function, then follows it with a beautifully
@@ -1172,6 +1210,51 @@ the grading.
 **This rule and the "predict before you run" prompt are the same instinct.** Both
 refuse to hand over the answer before the reader has formed one. A prediction prompt
 does it for a number; leave room does it for the interpretation.
+
+---
+
+### Accessible to the student who cannot see the figure
+
+**This is a legal obligation, not a courtesy, and it has a date.** A public university is a
+Title II entity, and the DOJ's 2024 rule makes WCAG 2.1 Level AA the standard for web content
+a covered entity provides or makes available — course material included — from **26 April
+2027** for entities serving 50,000 or more. A public repo with a hosted-notebook badge is web
+content the university makes available. Nothing about it being a notebook exempts it.
+
+**The three rules above create most of the exposure, so they are where the remedy goes.**
+*Ship it executed* commits every rendered figure. *Print something after each step* fills the
+notebook with output. *One click, no install* makes it public. None of those is wrong; each
+of them ships something that has to be readable by someone who is not reading it with their
+eyes.
+
+    every committed figure        carries a text alternative saying what it SHOWS, not what
+                                  it is. "Cost falls steeply to about 40 units and is flat
+                                  after" - not "line chart of cost versus units."
+    every figure that MATTERS     also has its numbers reachable as text or a table. The
+                                  reader who cannot see the plot should not have to take the
+                                  claim on trust, and this is the same requirement as "every
+                                  number in the prose comes from a run", pointed the other way.
+    colour                        never the only carrier of meaning. Add markers, line styles,
+                                  direct labels. Avoid red/green, green/brown, green/blue and
+                                  blue/grey together.
+    markdown headings             a real hierarchy, in order, never skipping a level. The
+                                  heading structure IS the navigation for a screen reader,
+                                  which is why "one idea per cell with a heading above it"
+                                  was already the right rule for a second reason.
+    link text                     says where it goes. Never "click here" or a bare URL.
+    any video or recording        captioned.
+
+**Alt text is a one-sentence cost at authoring time and a project in retrospect.** The
+teaching library is organised by topic so one notebook serves several courses across several
+years, which means an inaccessible figure is inherited by every course that draws on it. The
+library's structure concentrates the remediation exactly as it concentrates the error.
+
+> **Write the alternative text in the same cell as the plot, at the moment you write the
+> plot.** A checklist item that says "add alt text before shipping" is a requirement living
+> in prose, and Part 6 says those have already failed.
+
+- [ ] **Every committed figure has a text alternative**, colour is not the only carrier of
+      meaning, and the markdown headings form a hierarchy that does not skip a level.
 
 ---
 
