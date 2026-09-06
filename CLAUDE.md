@@ -37,7 +37,7 @@ true of that project alone:
 
     The portable standard governs this repo. Read it before working here:
       https://github.com/sear-labs/code-standard    canonical - same from any machine
-      a local clone, if you have one                faster; e.g. C:\Users\<you>\repos\code-standard
+      a local clone, if you have one                faster; e.g. C:\Users\<you>\dev\repo\ops\code-standard
 
     # Part 11 - This project specifically
     ...archetype, data layout, known defects, exemptions...
@@ -217,9 +217,16 @@ it has the standard.
 describe one project. None of them is authority, and none may override this file.
 
 **To amend it, petition — do not edit locally.** A session that hits something this document gets
-wrong or fails to cover writes the proposed text out in full and sends it to whoever holds
-`Classes\Code Standard\`, who checks it against what is already recorded and commits it with
-provenance in the message. **Sessions do not amend their own working copy of the standard.**
+wrong or fails to cover writes the proposed text out in full and opens it against
+<https://github.com/sear-labs/code-standard> — as a pull request where it has access, or as a
+dated note handed to Jones where it does not. Whoever merges checks it against what is already
+recorded and commits it with provenance in the message. **Sessions do not amend their own working
+copy of the standard.**
+
+> **The address is the repository, never a folder.** This instruction named a local path until
+> 2026-09-06, by which time that folder had moved and the route to amending this document pointed
+> at nothing. A path is true of one machine — the rule two sections above says exactly that, and
+> this paragraph was its counter-example.
 
 **The floor is two.** Petition once the same thing has been hit by two independent sessions, or
 twice by one. Below that it is friction, not a pattern, and a standard that grows on first friction
