@@ -5,6 +5,16 @@
 .env
 .env.*
 *.lic
+
+# Licence files that are NOT named *.lic. Measured 2026-09-06: gamslice.txt is a
+# five-user departmental GAMS licence and matched nothing above, so a GAMS project
+# folder would have carried it into git. A wildcard on the extension is not enough -
+# licence files are named by their vendor's convention, not yours.
+gamslice.txt
+gamslice*.txt
+*license.dat
+*licence.dat
+WLSKeyinfo*
 *.pem
 *.key
 *_key*
