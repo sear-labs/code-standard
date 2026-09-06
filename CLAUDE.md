@@ -433,6 +433,13 @@ the rule wins unless overridden explicitly.
    and either break or — worse — silently alter results. Record the interpreter
    version too, and make it match what actually ran.
 
+   **A range is not a record.** `pandas>=2.0,<4` says what the code tolerates; it does not
+   say what ran, and re-solving it next month installs something else. Ship both: the range,
+   so a reader can install; and a resolved list — `pip freeze`, a lock file, whatever the
+   tool produces — committed beside the results it produced. The interpreter version is
+   already held to this standard in the sentence above; the libraries are the larger half of
+   the same claim.
+
 4. **Inputs are immutable.** Whatever comes from outside is read-only. No stage
    writes back to it. Fix the code and re-run; never lose the original.
 
@@ -984,8 +991,9 @@ unmanaged surface.
   reduce exposure; it relocates it and adds a second copy.
 
 **How:** `gh repo create <name> --private`, with the name built per *Repository names lead
-with what the searcher already knows*. Add `LICENSE` and `CITATION.cff` if it will be cited,
-per Part 5. Private is the default and public is the decision.
+with what the searcher already knows*. Add `LICENSE` always, and `CITATION.cff` if it will be cited — see Part 5. Without a
+licence the repo is under exclusive copyright, and the students you handed it to have no
+permission to run it. Private is the default and public is the decision.
 
 ### Retiring a project: seven things trail it
 
@@ -1394,6 +1402,26 @@ mechanisms and a repo meant to be cited needs both.
 **LICENSE** — MIT unless the repo has commercial potential, in which case weigh Apache-2.0 for its
 patent grant. UTA encourages open-access models and leaves the choice to the author.
 
+**A repo that ships data needs a second licence, because the first one does not cover it.**
+This document requires instance tables in `data/raw/` and committed figures and results. MIT
+and Apache-2.0 speak about *the Software*; they say nothing about a database right, so the
+tables a reader was told to edit are the one part of the repo whose terms are unstated.
+
+    code                          MIT, or Apache-2.0 where a patent grant is wanted
+    data, tables, figures         CC0 where you want it used with no conditions;
+                                  CC-BY where attribution matters and citation norms alone
+                                  are not enough
+    prose, slides, notebooks-as-text   CC-BY
+
+Say which is which **in the LICENSE file or the README**, by path. A second licence with
+nothing saying what it covers is worse than one, because now two documents claim the same
+files.
+
+> **Choosing nothing is choosing.** Zenodo's licence field is required and defaults to CC-BY,
+> so an unstated choice becomes a stated one at deposit — see the DOI procedure below. And a
+> repo with no licence at all is under exclusive copyright: a public host's terms let people
+> view and fork, which is not permission to run, modify or teach from it.
+
 **CITATION.cff** in the repo root. GitHub renders a "Cite this repository" button from it, which is
 the whole point: people cite what is easy to cite, and friction is what stops them, not ethics.
 
@@ -1411,7 +1439,9 @@ one-time edit and not a per-release chore. The order is forced — you cannot ha
 first release:
 
 1. Add `CITATION.cff` with no `doi:` field
-2. Connect the repo in Zenodo, tag a release
+2. Connect the repo in Zenodo, tag a release. **Set the licence on the deposit explicitly** —
+   it is a required field and it defaults to CC-BY, so a repo licensed MIT is deposited under
+   a content licence unless you say otherwise.
 3. Zenodo mints both DOIs
 4. Add the concept DOI to `CITATION.cff` and commit
 5. Never touch it again
