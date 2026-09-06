@@ -761,6 +761,138 @@ deleted, and it goes on reporting success until something asks it to fetch.
 
 ---
 
+## Part 2c — The life of a project: starting one, and ending one
+
+### Nothing is created for you, and that is the problem
+
+Opening a session in a folder creates **exactly one thing**: a path-keyed directory under
+`~/.claude/projects/`, which accumulates that folder's memory and transcripts. Everything
+else — git, a remote, a `CLAUDE.md`, a `.claude/` — exists only because somebody made it.
+
+Nothing prompts for the decision, so in practice it is never made. A folder ends in whatever
+state its first session happened to leave it, and the reasoning is not recorded anywhere.
+
+**Measured 2026-09-06:** 38 path-keyed directories, 1.1 GB, 84 memory files. **Six were
+orphaned** — 633 MB and 12 memory files keyed to folders that no longer exist. One pair was
+stranded by renaming a project folder months earlier; one was stranded the same day, by a
+migration that had a step for this and applied it only to the folders it already knew about.
+
+### Starting: answer four questions, then act
+
+The four axes are stated in *Git and syncing folders*. Answer them **before** the first
+commit, because two of the four are expensive to change afterwards: a remote cannot be
+un-published, and a history cannot be un-recorded.
+
+Write the answers into the folder's own `CLAUDE.md` under its Part 11 heading — one sentence
+each. A structure whose reason is written down survives the first person who finds it
+inconvenient; one whose reason is not gets "tidied" within a year.
+
+### What exists once a project is running
+
+    ~/.claude/projects/<key>/          AUTOMATIC. Memory and transcripts. Keyed by the
+                                       absolute path with punctuation replaced by dashes,
+                                       so it is orphaned by any rename or move.
+    <folder>/CLAUDE.md                 written by you. Points at this standard; adds Part 11.
+    <folder>/.claude/settings.local.json   written by the harness as permissions are approved.
+    <folder>/.git or .git pointer      only if git was chosen
+    the GitHub repository              only if a remote was chosen
+    a bundle or mirror                 only if the repo has no remote and needs a backup
+
+Six things, of which **one is created without being asked for and none is removed
+automatically.** That asymmetry is what produces orphans.
+
+### Git: when, and when not
+
+**Use git when the thing changes and you would want to know what changed** — code, notebooks,
+prose under revision, anything where "what did this look like before" is a real question.
+
+**Do not use git for:**
+
+- **Binaries and finished outputs.** Git stores them badly and history is permanent, so a
+  large binary committed once is carried forever. Proposal folders are Word, PDF and Excel;
+  see Part 2b.
+- **Raw capture edited from several devices.** The pointer treatment binds history to one
+  machine, which is wrong for anything written from a phone. See *When the answer is: no git
+  at all* for the filename convention that replaces it.
+- **Anything whose backup requirement is already met by a sync service** and which nobody
+  will ever diff.
+
+**How, when the answer is yes:**
+
+    git init
+    # write .gitignore FIRST - see Part 1, "Git history is permanent"
+    git check-ignore -v <a file that must never be committed>     # verify, do not assume
+    git add . && git commit
+
+The `check-ignore` step is not optional. A credential in history means rotating the
+credential, not amending the commit.
+
+### GitHub: when, and when never
+
+**Publish to GitHub when at least one is true:** somebody else needs it; it must survive the
+machine; or it will be cited. Absent all three, git alone is enough and a remote is
+unmanaged surface.
+
+**Never publish:**
+
+- Anything sensitive, or adjacent to an education record. Consolidated observations about
+  students are education-record adjacent even when no name appears — see Part 0.
+- Anything that maps a credential exposure. **Publishing a map of an exposure is worse than
+  publishing a key that has already been rotated**, because the map says where to look and
+  what is still worth trying.
+- Work product belonging on institutional storage. Moving it to a personal account does not
+  reduce exposure; it relocates it and adds a second copy.
+
+**How:** `gh repo create <name> --private`, with the name built per *Repository names lead
+with what the searcher already knows*. Add `LICENSE` and `CITATION.cff` if it will be cited,
+per Part 5. Private is the default and public is the decision.
+
+### Retiring a project: seven things trail it
+
+Deleting the folder handles three of them. **The other four are why orphans accumulate.**
+
+    1  the working tree            delete, ONLY after the replacement is verified to exist
+    2  .git, or gitdir + pointer   delete both halves; a pointer left behind names a gitdir
+                                   that no longer exists, which reads as corruption
+    3  .claude/ in the folder      goes with the folder
+    4  CLAUDE.md in the folder     goes with the folder
+    5  the GitHub repository       archive rather than delete - archiving is reversible and
+                                   says "complete" rather than "gone". Delete only if it
+                                   should never have existed.
+    6  ~/.claude/projects/<key>/   RENAME it to the successor's key if the work moved;
+                                   delete it only if the work is genuinely over. Memory
+                                   files are curated and are not logs.
+    7  every pointer that names it  briefings, ~/.claude/CLAUDE.md, scheduled tasks, other
+                                   projects' CLAUDE.md files. Dated notes are history and
+                                   are left alone.
+
+**Before deleting anything, verify the replacement exists.** Clone first, check the file
+count and the tracked count, and only then remove the original. And verify "it is all pushed"
+rather than accepting it: check `git log --branches --not --remotes`, and compare local tags
+against the remote's **peeled** refs.
+
+### Finding what was already left behind
+
+The path key is the absolute path with every non-alphanumeric character replaced by `-`.
+That encoding is **lossy** — `:`, `\`, spaces, commas, apostrophes and underscores all become
+`-` — so it can be computed forwards and **cannot be reversed**. Any orphan hunt that decodes
+a key back into a path will produce false positives.
+
+**Read the path from inside instead.** Each transcript records the session's `cwd`; encode
+that and compare it to the directory's own name:
+
+    key == enc(cwd)  and the path exists     -> live
+    key == enc(cwd)  and the path is gone    -> ORPHANED
+    key != enc(cwd)                          -> the directory was renamed to follow a move,
+                                                which is the correct outcome, not a fault
+
+For stale pointers, **enumerate the moves and search for each one.** A sweep for a single old
+path is not a sweep for stale pointers: on 2026-09-06 a validated search for one retired root
+ran clean while five other dead paths sat in eleven live files, including this document's own
+Governance section.
+
+---
+
 ## Part 3 — Archetype T: code meant for instruction
 
 ### The rule
