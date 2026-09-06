@@ -1162,10 +1162,42 @@ Git still defaults to `master` when this is unset, while GitHub, every badge and
 `main`. Repos born on GitHub get `main`; repos born from `git init` get `master`. **Nobody chooses
 this**, and it silently splits a lab's repos in half.
 
+**Which is which, so the question is never reasoned out under pressure:** `master` is **git's**
+default and `main` is **GitHub's**. A bare `git init` still produces `master` in git 2.51 unless
+`init.defaultBranch` is set; GitHub has created `main` since October 2020, and every badge, raw
+URL, Pages build and CI default followed it. **If it deploys to GitHub there is no choice — it is
+`main`.**
+
 **The rename is free before the first push and never again.** With no remote, `git branch -m master
 main` leaves nothing behind, and badges already naming `main` simply start resolving. After a push
 it means renaming a live default branch, which leaves a stale branch that still resolves and serves
 quietly older content.
+
+#### When the free window has already passed
+
+Naming the expensive case and stopping there is what this section used to do, and it left the
+common situation unanswered. **Rename through the host's own rename**, which moves the branch,
+retargets open pull requests and redirects the web UI. Then fix the two things it does not, both
+of which are silent:
+
+    existing clones      git branch -m master main
+                         git fetch origin --prune
+                         git branch -u origin/main main
+    hardcoded URLs       every /blob/master/ and /raw/master/ already copied out
+
+**Never rename by creating `main` and leaving `master` behind.** Two branches that both resolve
+will drift, and the stale one goes on serving older content to anyone who reaches it — the defect
+the rename was meant to remove, now with a second copy. Observed on one repository where the
+abandoned branch sat **66 commits** behind while the site itself deployed correctly from `main`:
+nothing was broken, nothing reported it, and only a clone or a direct link would have found it.
+
+**A deployed site is not evidence the branches are right.** Check what the host builds from and
+what branches exist, separately — the first can be correct while the second is not.
+
+> **`gh api repos/<owner>/<repo>/branches/<name>` is not an existence check.** Asked for a branch
+> that does not exist, it has been observed returning **a different branch** rather than failing,
+> which reads as confirmation. Use `git ls-remote --heads`, which lists what is actually there.
+> Same shape as every other probe in Part 12 that agreed with itself.
 
 ---
 
