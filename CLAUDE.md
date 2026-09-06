@@ -821,7 +821,14 @@ syncing folder is the original problem again.
 concurrently modified, so it is safe inside a syncing folder where a live `.git` is not.
 
     git -C <worktree> bundle create "<cloud>/<name>-$(date +%Y-%m-%d).bundle" --all
-    git bundle verify  "<cloud>/<name>-$(date +%Y-%m-%d).bundle"
+    git -C <worktree> bundle verify "<cloud>/<name>-$(date +%Y-%m-%d).bundle"
+
+> **`bundle verify` needs a repository, and it is not the bundle.** Run without `-C`, from a
+> directory that is not a repo — which is what a scheduled job does — it exits **1** with
+> `error: need a repository to verify a bundle`, having verified nothing. A job that does not
+> check the exit code then writes bundles forever and never verifies one, which is precisely
+> the failure this paragraph exists to prevent. Point `-C` at the repository the bundle came
+> from.
 
 Three properties are load-bearing. `bundle create` never modifies the source repository.
 **Verify immediately** — an unverified backup is a claim, not a measurement. And **date the
