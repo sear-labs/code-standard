@@ -12,108 +12,39 @@ When starting a teaching notebook: *"Teaching-code style per CLAUDE.md Part 3."*
 
 ---
 
-## Index — where each rule lives
 
-**This index is an address, not a rule.** Every line names a section; the rule and the
-reasoning that keeps it from being "fixed" live there together. Acting on a line here
-without reading its section is the restatement failure described in Part 0, committed
-inside this document rather than outside it.
+## What each Part is for
 
-### Part 0 — What this document is, and how it changes
-- Pointed at, never copied; a subordinate document may point and may never restate — *How this document reaches a project*
-- Lead with the URL; a path is true of one machine only — *same section*
-- Clone outside any syncing folder; `Documents\` is synced via Known Folder Move — *same section*
-- A clone's branch is part of its address; check it before quoting — *same section*
-- Merge rights gate on how much depends on a repo, not on repo type — *Merge policy*
-- A published paper repo stays unlocked; the DOI already freezes what is cited — *The published-paper case*
-- Outside contributions cost triage, not safety — *Contributions from outside*
-- Split the teaching library: notebooks public, observations on students private — *Which is what actually decides*
-- Blocking is repository access; branch protection decides merges — *Blocking is access*
-- Two things per machine: `init.defaultBranch`, and the pointer in `~/.claude/CLAUDE.md` — *Setting up a new machine*
-- Petition; never edit a clone. Floor of two sightings for a rule, one for a defect — *Governance*
-- Approvals are zero on purpose; the merge restriction is the gate — *How this is enforced*
+Two standards live here and they are used differently. This is the map; the index above is
+the address list.
 
-### Part 1 — The invariant core
-1. One command reproduces everything
-2. Configuration lives outside code
-3. Dependencies pinned with upper bounds
-4. Inputs are immutable
-5. Generated files gitignored, with documented exceptions
-6. Tests exist; CI runs them on a clean machine
-7. The README says how to run it
-8. Commits are meaningful; releases are tagged
-- Never commit secrets — history is permanent, so verify `.gitignore` before the first commit
-- Carry both a sort key and a readable label; month-first for terms — *When the sort key and the readable label disagree*
-- Repository names lead with what the searcher knows; research and teaching forms invert deliberately — *Repository names*
-- Refer to people by surname; four-step disambiguation ladder — *Refer to people by surname*
-- Published work carries journal and year — *Published work carries the journal and year*
+    ASKING "WHAT DO I ACTUALLY DO?"        start here
+      Part 2b   a folder that is not a repo - how to shape it
+      Part 2c   starting a project, and retiring one, and what each step creates
+      Part 10   two checklists, written to be copied
 
-### Part 2 / 2b / 2c — Archetypes, folders that are not repos, and the life of a project
-- Archetypes are repo shapes; most project folders should never be repos — *Part 2b*
-- Separate what ACCUMULATES from what PERSISTS — *The organising rule*
-- State where new work goes, or people will guess — *State where new work goes*
-- `00-ADMIN/` sorts first and holds what governs the folder — *`00-ADMIN/` earns the zero*
-- A repo is what is versioned, released and cloned together — *When a folder becomes a repo*
-- Four axes decide a folder's treatment, and the fourth can veto the rest — *Git and syncing folders*
-- A folder edited from many devices takes no git; the filename carries the update rule — *When the answer is: no git at all*
-- The pointer treatment, and its precondition of exactly one writer — *The pointer treatment*
-- One machine owns the history and says so, in a file beside the failure — *One machine owns the history*
-- A rule enforced by an error message must ship its explanation beside it — *A rule enforced by a failure*
-- Dated bundles, not same-disk mirrors, for a repo with no remote — *Backing up a repository that has no remote*
-- Nothing is created for you except the memory directory — *Part 2c*
-- Four questions before the first commit; two are expensive to reverse — *Starting*
-- When git earns its place, and when it does not — *Git: when, and when not*
-- When a remote is warranted, and when it never is — *GitHub: when, and when never*
-- Seven things trail a retirement; deleting the folder handles three — *Retiring a project*
-- The path key computes forwards and cannot be decoded — *Finding what was already left behind*
+    ASKING "IS THIS ALLOWED / IS THIS RIGHT?"
+      Part 1    the invariant core - eight rules that apply to everything, plus naming
+      Part 4    THE BOUNDARY - where the engineering and teaching halves contradict, and
+                which one wins. If you read one section, read this one.
+      Part 8    anti-patterns, stated as things not to do
 
-### Part 3 — Archetype T: code meant for instruction
-- The top of a teaching notebook is step-by-step; the bottom may abstract — *The rule*
-- No function definitions in the teaching section. None — *Don't*
-- Check for the inversion first — *The inversion*
-- Wrap honestly, when you wrap at all — *When to wrap*
-- Leave room: the prose sets up a discussion, it does not hold one — *Leave room*
+    ASKING "HOW DO I BUILD THIS PARTICULAR THING?"
+      Part 2    archetypes - the shapes a repo takes. Reference, not a walkthrough.
+      Part 3    Archetype T: code somebody learns from. Contradicts Part 1 on purpose.
+      Part 5    shipping teaching material: licence, citation, DOI
 
-### Part 4 — THE BOUNDARY (read this if you read nothing else)
-- Where the two halves contradict, and how it resolves — *The resolution*
-- Tables versus knobs: the one class of number that leaves the notebook — *Tables versus knobs*
-- Two folders, three roles — *The shape*
-- Every teaching notebook ends with an agreement assertion — *The agreement assertion*
-- The assertion is subject to the rule it enforces; tolerance follows the computation — *The assertion is subject*
-- The assertion protects the models, not the checks — *Corollary*
+    ASKING "HOW DO I KNOW IT IS TRUE?"
+      Part 6    the bugs that produce plausible output, and how to catch them
+      Part 7    auditing notebooks you did not write
+      Part 12   working alongside other sessions, and verifying rather than assuming
 
-### Part 5 — Shipping teaching material
-- Every published repo carries a licence AND a citation — *Every published repo*
-- Concept DOI versus version DOI; the concept DOI never changes — *The DOI does not need remembering*
+    Part 9      working style
+    Part 11     reserved for the project's own file - see "How this document reaches a project"
 
-### Part 6 — Verification: the bugs that produce plausible output
-- Assert the theory in code — *Assert the theory in code*
-- Every number in the prose comes from a run — *Every number in the prose*
-- The published path is not the path you develop on — *The published path*
-- A check must be shown to fail before a pass means anything — *A check must be shown to fail*
-- A requirement living only in prose has already failed — *A requirement that lives only in prose*
-
-### Part 7 / 8 / 9 — Auditing an existing set of notebooks; anti-patterns; working style
-
-### Part 10 — Two things to copy
-- The pre-ship checklist, and the prompt block
-
-### Part 11 — Reserved for the project's own file
-
-### Part 12 — Working alongside other sessions
-- One writer per folder; any number of readers — *The one-writer rule*
-- Parallel writers need worktrees, never branches in one folder — *The branch rule*
-- `git commit -- <paths>`, never `add` then a bare `commit` — *Committing when you are not the only writer*
-- Verify the outcome, not the step — *Verify the outcome*
-- Absence of revision is weak evidence; evidence of use is strong — *Two corollaries*
-- State your normalisation before quoting a hash — *Two corollaries*
-- Test the probe before trusting a clean result — *A third corollary*
-- Never conclude from sanitized output — *A fourth corollary*
-- A scrub and a rotation are two claims with two kinds of evidence — *A scrub and a rotation*
-- When to spawn a subagent, and when not to — *When to use a subagent*
-- An unattended process reports; it does not write — *An unattended process*
-- A check that runs before you write, not after; no remote is a loud exemption — *A check that runs before you write*
-- Eight traps, each one a check that agreed with itself — *Eight traps*
+**Part 0 is about the document, not about the work.** If you are looking for a rule, you are
+in the wrong section; use the map above. Read Part 0 when you want to change something here,
+or when you need to know why it is one file.
 
 ---
 
@@ -397,41 +328,6 @@ So the pull request is a **rate limiter and a record**, and the merge restrictio
 authorisation. The first is what stops a run of small changes going in one at a time, each one
 quietly invalidating the last — which is how most of the errors in this document's own history were
 made, and then found.
-
----
-
-### What each Part is for
-
-Two standards live here and they are used differently. This is the map; the index above is
-the address list.
-
-    ASKING "WHAT DO I ACTUALLY DO?"        start here
-      Part 2b   a folder that is not a repo - how to shape it
-      Part 2c   starting a project, and retiring one, and what each step creates
-      Part 10   two checklists, written to be copied
-
-    ASKING "IS THIS ALLOWED / IS THIS RIGHT?"
-      Part 1    the invariant core - eight rules that apply to everything, plus naming
-      Part 4    THE BOUNDARY - where the engineering and teaching halves contradict, and
-                which one wins. If you read one section, read this one.
-      Part 8    anti-patterns, stated as things not to do
-
-    ASKING "HOW DO I BUILD THIS PARTICULAR THING?"
-      Part 2    archetypes - the shapes a repo takes. Reference, not a walkthrough.
-      Part 3    Archetype T: code somebody learns from. Contradicts Part 1 on purpose.
-      Part 5    shipping teaching material: licence, citation, DOI
-
-    ASKING "HOW DO I KNOW IT IS TRUE?"
-      Part 6    the bugs that produce plausible output, and how to catch them
-      Part 7    auditing notebooks you did not write
-      Part 12   working alongside other sessions, and verifying rather than assuming
-
-    Part 9      working style
-    Part 11     reserved for the project's own file - see "How this document reaches a project"
-
-**Part 0 is about the document, not about the work.** If you are looking for a rule, you are
-in the wrong section; use the map above. Read Part 0 when you want to change something here,
-or when you need to know why it is one file.
 
 ---
 
