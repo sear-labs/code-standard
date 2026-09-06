@@ -602,6 +602,161 @@ cloned together.** Ask whether anyone would ever want this *without the rest of 
 A folder can contain a repo — `code/treed-opt/` may be its own repo inside a working folder that is
 not. That is normal, and better than promoting the whole tree to satisfy one subdirectory.
 
+### Git and syncing folders: four axes, decided separately
+
+"Clone outside any syncing folder" answers the easy half. The hard half is the folder that
+**must** stay synced — work product that belongs on institutional storage, or personal
+material whose backup *is* the sync service. Deleting the sync is not available, so the
+history has to move instead.
+
+**Four** questions decide a folder's treatment, and they are independent. Conflating any two
+produces a rule that contradicts itself:
+
+    how sensitive is it?        ->  may reach a public host, or never
+    is it actively developed?   ->  wants git, or does not
+    is it in a syncing folder?  ->  .git via a pointer, or .git in place
+    how many devices EDIT it?   ->  one writer, or many
+
+**Sensitivity does not decide whether something has git. Activity does.** A private repo is
+not made safe by being private, and a folder is not made unversionable by being sensitive.
+
+**The fourth question is the one most easily skipped, and it can veto the other three.**
+It is not "how many devices sync it" — everything synced reaches every device. It is how
+many devices *record changes*. Ask it before reaching for the pointer treatment below,
+because that treatment answers it with "one" whether or not one is the true answer.
+
+#### When the answer is: no git at all
+
+A folder edited from a phone, a tablet and several computers **cannot** take the pointer
+treatment, and should not have git.
+
+The reasoning is not that git is too heavy. It is that both available shapes fail. A `.git`
+inside the syncing folder corrupts — that is the whole premise of this section. A `.git`
+behind a pointer works, but binds history to exactly one machine, so a change made anywhere
+else cannot be recorded at all. For a folder whose purpose is capture from wherever the
+thought happens, that converts a sync property into a single-device restriction and calls it
+a safeguard.
+
+**Use the sync service's own file versioning, and encode the update rule in the filename:**
+
+    dated    YYYY-MM-DD[letter]-slug.md   append-only. Never rewritten; a correction is a
+                                          new dated file citing the original.
+    undated  <topic>.md                   living. Overwritten in place, because a stale
+                                          current-state doc misleads, while a stale dated
+                                          one is merely history.
+
+The presence or absence of a date **is** the update rule. Nothing enforces it, nothing can
+fail to run, and it behaves identically on a phone. Archive a superseded summary by writing
+the new one dated — not by deleting the old.
+
+This is weaker than git and the weakness should be stated plainly: no commits, no branches,
+no `git log`, no atomic multi-file change. What it buys is that every device can write. For
+raw capture — ideas, journals, notes — that trade is correct, and the convention above has
+been running the `claude-notes` repo's own `notes/` versus `briefings/` split since
+2026-09-03.
+
+#### The pointer treatment
+
+**Precondition: exactly one machine edits this worktree.** If that is not true, the previous
+subsection applies instead. Everything below assumes a single writer and is unsafe advice
+without it.
+
+When the working tree must stay in a syncing folder and the repository is actively
+developed, the history moves out and the tree stays:
+
+    git init --separate-git-dir <dev-root>/gitdirs/<name>.git  <worktree>
+
+This leaves a `.git` **file** in the worktree containing one line, `gitdir: <path>`. Git
+follows it; the sync client sees a 50-byte text file instead of thousands of loose objects.
+
+Three properties make this safe where a synced `.git` is not. The worktree syncs
+continuously and is a normal set of files. The history is on one machine's local disk and is
+never touched by two writers. And the pointer file itself syncs, so the arrangement is
+*self-announcing* on every other machine rather than silent.
+
+> **`--separate-git-dir` cannot cross a volume boundary.** It is implemented as a rename, so
+> a worktree on one drive and a gitdir on another fails with `fatal: … Improper link`. The
+> command still creates the pointer's *absence* rather than erroring cleanly, so a script
+> that does not check will proceed against a repository it did not migrate. Across volumes:
+> copy the `.git` directory, set `core.worktree` in the copy, verify `git --git-dir=… log`
+> and `status` against the worktree, and only then remove the original and write the pointer
+> by hand.
+
+#### One machine owns the history, and says so
+
+A synced worktree is visible from every machine on the account. **Exactly one machine holds
+its gitdir.** The others are expected to fail.
+
+That failure is the enforcement, and it is free: git reports
+`fatal: not a git repository: <path>` naming a path that exists on one machine, and the
+working tree is untouched. Nothing needs to detect the second machine or defend against it.
+
+**Why one owner rather than two synced ones:** the working tree syncs continuously while
+history syncs on whatever schedule the client chooses. Two machines each holding git means
+the second sees the first's *committed* work as *uncommitted* changes, and can re-commit it
+under its own authorship. That failure is silent, which makes it strictly worse than the
+loud failure above.
+
+**Every such worktree carries a `GIT-OWNER.md`** beside the pointer, naming the owning
+machine, the gitdir path, and the fact that the error is deliberate. The pointer file does
+not explain itself, and the obvious repair on a second machine — re-init, or create the
+missing gitdir — is exactly the corruption the arrangement prevents.
+
+##### A rule enforced by a failure needs the failure to explain itself
+
+This is a general obligation, not a detail of this one file. **Any rule whose enforcement
+mechanism is an error message will be reported as a bug by whoever meets the error without
+knowing the rule** — and reported in good faith, because a red `fatal:` is what a fault
+looks like.
+
+Measured across the two-machine migration: the second machine met three pointer files that
+failed exactly as designed, and correctly read them as intended behaviour, **because a
+`GIT-OWNER.md` sat beside each one.** In the same pass it met four bare mirrors that also
+failed exactly as designed — their sources having moved out of reach — with no equivalent
+note beside them, and initially reported those as a finding. The difference between the two
+readings was entirely the presence of the explainer.
+
+So: where a design chooses a loud failure over a silent one — which this section
+recommends twice — the explanation ships **next to the thing that fails**, in the place
+someone lands when it does. Not in a decisions log, not in the standard, not in a chat.
+
+**"Beside it" has to be defined for things with nowhere to put a file.** A synced worktree
+has an obvious place; a **bare repository has no working tree at all**, so nothing can sit
+next to it the way `GIT-OWNER.md` sits next to a pointer. Left unstated, the rule is
+unimplementable in exactly the case that produced it — the four mirrors whose designed
+failure was read as a finding are bare repos.
+
+For a bare repository, "beside it" is one of:
+
+    a README.md in the directory that CONTAINS the set    covers all of them at once, and is
+                                                          where someone lands after an error
+    git config --add <a note key> in the repo             travels with the repo itself, and
+                                                          survives being moved
+
+Prefer the containing directory's `README.md` when the repos share a fate, which they
+usually do. **The obligation is that whoever meets the error finds the explanation without
+already knowing the rule** — the medium is whatever satisfies that for the artifact at hand.
+
+#### Backing up a repository that has no remote
+
+A worktree that may never reach a host still needs a backup, and a live `.git` cannot be one:
+a bare mirror on the same disk protects against nothing a copy would not, and a mirror in a
+syncing folder is the original problem again.
+
+**Use a dated `git bundle`.** A bundle is a single static file, written once and never
+concurrently modified, so it is safe inside a syncing folder where a live `.git` is not.
+
+    git -C <worktree> bundle create "<cloud>/<name>-$(date +%Y-%m-%d).bundle" --all
+    git bundle verify  "<cloud>/<name>-$(date +%Y-%m-%d).bundle"
+
+Three properties are load-bearing. `bundle create` never modifies the source repository.
+**Verify immediately** — an unverified backup is a claim, not a measurement. And **date the
+filename**, so a bad bundle cannot overwrite a good one.
+
+A bare mirror whose `origin` is a local path is not a backup either way: it is a second copy
+on the same disk whose link to the original breaks the moment the original moves or is
+deleted, and it goes on reporting success until something asks it to fetch.
+
 ---
 
 ---
@@ -1641,6 +1796,124 @@ and all of it needing accumulated context.
 **Peers and subagents are not substitutes.** A peer session catches what you did not think to ask,
 because it has its own context and arrived from somewhere else. A subagent answers exactly what you
 asked, cheaply, and will never volunteer that the question was wrong.
+
+---
+
+### A check that runs before you write, not after
+
+Every rule in this section is about noticing that a thing you believed is false. Most of
+them were learned after the fact. A session-start check moves that discovery to before the
+first write, which is the only point where it is free.
+
+The check runs on session start, in the session's own directory, and **prints nothing when
+the repository is healthy** — its output becomes session context, so silence is the correct
+result and noise trains the reader to skip it.
+
+    no .git at all              exit silently; not every folder is a repo
+    remote unreachable          WARN and proceed - offline, timeout and a dead remote are
+                                indistinguishable from here, and none of them is a reason
+                                to refuse to work
+    confirmed behind            BLOCK - this is the only case where the local state is
+                                known wrong
+    no remote configured        LOUD EXEMPTION - never a silent pass. A repo with no remote
+                                is the case most likely to have no backup at all
+    detached HEAD               report; nothing can be compared to a remote from here
+
+**Warn on unreachable, block only on a confirmed "behind."** One rule then covers the slow
+remote, the deleted remote and the aeroplane, with no timeout threshold to tune — and
+tuning a threshold is how a check acquires a case nobody has tested.
+
+**A repo with no remote must report, not pass.** That is the case the pointer treatment
+above creates deliberately, and a silent pass there would hide exactly the repositories
+whose backup situation is least automatic.
+
+### Eight traps, each one a check that agreed with itself
+
+Every entry below produced a confident wrong answer, and in each the tool reported success.
+They are recorded individually because the general rule — *verify the outcome, not the step* —
+did not stop any of them from happening; naming the specific shape is what does.
+
+#### `$?` after a command substitution is not the exit code you think
+
+    printf '%-40s rc=%s\n' "$(basename "$m")" "$?"     # WRONG
+
+Arguments expand left to right, so the command substitution runs first and `$?` reports
+*its* status. This was used to verify four bare mirrors; all four reported `rc=0` and one
+was actually `rc=128`, against a remote that had been deleted minutes earlier. It is the
+same failure as piping into `head` and reading the pipeline's status, arriving by a
+different route — and it is worse, because there is no pipe to notice.
+
+**Capture the status into a variable on the very next line, before anything else runs.**
+
+#### An idle session still holds its working directory
+
+An assistant session keeps a live process per session, indefinitely. The operating system
+pins that process's working directory, so the folder **cannot be renamed or deleted** while
+writes *inside* it still succeed — which makes it read as a permissions problem rather than
+a lock. On Windows the error is `Device or resource busy`.
+
+Archiving the session stops the process and releases it; closing its window does not.
+**Before any folder-wide move, list the sessions and their working directories.**
+
+#### `rm -rf` on a pinned directory partially succeeds
+
+It removes every child, then fails on the directory itself. You get an error message *and*
+an empty folder. Reading only the error concludes nothing happened; the contents are gone.
+**Check what remains rather than reading the exit status.**
+
+#### A missing `.git/index` looks exactly like mass deletion
+
+With no index, `git status` reports every path in `HEAD` as a staged deletion and every
+path on disk as untracked — 1,530 deletions against 1,521 files present and untouched.
+It reads as catastrophe and is nothing: `git reset` rebuilds the index from `HEAD` and
+touches no file in the working tree.
+
+**Do not "fix" it by committing.** That is the one action that makes the phantom deletions
+real.
+
+#### A tag comparison must peel the ref
+
+`git ls-remote --tags` returns the **tag object** sha for an annotated tag; `git rev-list -n1`
+returns the **commit**. Comparing those two manufactures a mismatch on a tag that is
+perfectly in sync. Compare against `refs/tags/<name>^{}`, and say which you used — the same
+rule as quoting a hash without its normalisation.
+
+#### "No trace" requires enumerating replicas, not deleting the visible copy
+
+A backup exists to be redundant, so by construction there is more than one. Deleting the
+copy in front of you removes **redundancy** and leaves the **content**, while producing a
+report that says the content is gone.
+
+Measured: a credential was found in one commit of a bare mirror. The mirror was deleted and
+the value searched for across every tree on that machine — zero hits, reported as removed.
+A second machine held its own copy of the same mirror, which the deletion had just promoted
+to the only copy of that history anywhere. The search was correct and the conclusion was
+false, because the search's scope was one machine and the claim's scope was all of them.
+
+**Before reporting that something is gone, list where it could be.** Other machines on the
+account, bundles, mirrors, the sync service's own trash, and any transcript that quoted it.
+A count of locations checked belongs beside the count of hits.
+
+#### A mirror can silently become the last copy
+
+The same event from the other side. A bare mirror whose `origin` is a local path is a weak
+backup — but it is also **not safely disposable**, because nothing inside it says whether it
+is the last one. Its `origin` still names a path that may no longer exist, and it goes on
+reporting success until something asks it to fetch.
+
+Two symmetric errors follow, and a plan should say which it is avoiding: deleting a mirror
+that turned out to be the only copy, and preserving one on the assumption it is, when the
+content is reachable elsewhere.
+
+#### "Not on `main`" is a claim about trees; content is a claim about blobs
+
+An unreachable commit whose *tree* is absent from `main` has not necessarily lost anything.
+The tree records an arrangement; the blobs are the bytes. Measured on six orphaned commits:
+three had trees found nowhere on `main`, and **all three referenced zero blobs absent from
+it** — the extra objects were the commit and tree containers, not content.
+
+**Stop at the blob level, or the analysis manufactures alarm.** The same shape as comparing
+an unpeeled tag ref: a difference at the wrong layer reads as a difference in substance.
 
 ---
 
