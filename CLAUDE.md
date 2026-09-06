@@ -991,9 +991,10 @@ unmanaged surface.
   reduce exposure; it relocates it and adds a second copy.
 
 **How:** `gh repo create <name> --private`, with the name built per *Repository names lead
-with what the searcher already knows*. Add `LICENSE` always, and `CITATION.cff` if it will be cited — see Part 5. Without a
-licence the repo is under exclusive copyright, and the students you handed it to have no
-permission to run it. Private is the default and public is the decision.
+with what the searcher already knows*. Add `LICENSE` **always**, and `CITATION.cff` if it
+will be cited — see Part 5. Without a licence the repo is under exclusive copyright, and the
+students you handed it to have no permission to run it. Private is the default and public is
+the decision.
 
 ### Retiring a project: seven things trail it
 
