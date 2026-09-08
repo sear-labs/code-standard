@@ -802,6 +802,21 @@ nearly ended the search.
 **"Positive variable defined by an equation" constrains nothing unless the defining expression
 can go negative.** Five equations in one model read as constraints and were inert.
 
+**Porting an ANALYSIS layer is not porting a model, and two things differ.** A model port
+reconciles on the objective; an analysis layer offers no such number, so **the acceptance
+test has to be invented** - exact agreement for tables, and a *distributional* comparison
+where a generator's individual draws are unrecoverable. And **check whether the "reporting"
+layer contains a generator**: one three-file R reporting directory turned out to hold a
+Markov chain producing model *inputs*, which is stages 1-3 and not stage 8, and changes its
+acceptance test entirely.
+
+**Formatting round-trips can be load-bearing, and they fail as an empty join rather than a
+wrong number.** R's `as.character` prints the shortest form within 15 significant digits, so
+a committed input holds exactly `26.67` where the product is `26.669999999999998`. A port
+computing the exact value matches *nothing*, and the symptom is a join returning no rows -
+which reads as a missing file rather than as a precision difference. Models rarely serialise;
+analysis layers do little else.
+
 **The reimplementation is usually smaller, and that is not an approximation.** Modelling
 languages generate variables over the full cross product of their index sets, and most of it is
 structurally empty — measured, 51 of 765 pairs — so a faithful port built 1.56M variables
@@ -1901,6 +1916,35 @@ Three rules follow from that list:
   list is a second copy that nothing compares, so the guard against drift drifts first.
 
 ---
+
+#### A claim about what something NEEDS cannot be checked by reading it
+
+**Dependencies are transitive, and the text carries no evidence of them.** A notebook that
+claims to need no solver says `import <your package>`; whether that reaches a solver depends
+on files the notebook never names.
+
+Measured in two repositories on the same day. In one, `import fews_stochopt` pulled in
+`gurobipy`, `numpy`, `pandas`, `scipy` and `yaml`, because the package's `__init__` imported
+a model module that imported the solver - so **the licence-free notebook failed at import on
+exactly the machine it exists to serve.** The guard watching it searched the notebook source
+for the string `gurobipy`, which a transitive import does not contain, and passed.
+
+> **Block the dependency and import for real.** A `MetaPathFinder` that refuses the name,
+> then import the package, every module the claim's path touches, and every third-party name
+> parsed out of the committed notebook.
+
+Two ways to make the claim true, both in use: resolve names lazily so the public API is
+importable without the heavy dependency (PEP 562 `__getattr__`), or put the importable
+surface in its own module that neither builds nor solves. **Having neither is the failure.**
+
+**Test the blocker before believing it.** One implementation used `find_module`, removed from
+modern Python, so it blocked nothing and the run that passed had proved nothing at all.
+
+**Injecting the wrong defect proves nothing either.** Making a package import its model
+module eagerly does *not* fail this check if that module already imports the solver lazily -
+correctly, because there is no defect. The defect is a **module-level** import reached by an
+**eager** one. Against that, 8 of 10 such tests go red while a source grep still returns
+false.
 
 #### A check must be shown to fail
 
