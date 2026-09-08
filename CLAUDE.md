@@ -264,6 +264,30 @@ it has the standard.
 **It is the only document that binds.** Notes record reasoning, briefings stage text, project files
 describe one project. None of them is authority, and none may override this file.
 
+**Where a fact goes is decided by its scope, and the routing is this:**
+
+    a fact about THE MACHINE     that machine's ~/.claude/CLAUDE.md
+    a fact about ONE PROJECT     that project's CLAUDE.md Part 11, or its memory/
+    a PORTABLE RULE              petition this document. Never write it elsewhere, and
+                                 never write it twice.
+    HISTORY and REASONING        a dated note
+
+> **This table lived for three days inside a subordinate document that pointed here for it.**
+> A notebook retired its own rules on 2026-09-04 with a redirect line reading "where things go
+> -> Standard, Part 0". It never arrived, and Part 0 stated the roles above without the routing
+> below them - so the only written copy of the routing rule sat in the one document that says
+> it is not the authority. Found 2026-09-07, which is the failure this Part exists to prevent,
+> one level up.
+
+**Candidate rules wait in one queue, and every entry leaves it.** An inference that is not yet
+a rule - something one session concluded that another should know, before anyone can say
+whether it is portable - goes to a single global carry-forward file, reached by URL from each
+machine's `~/.claude/CLAUDE.md` the way this document is. It is a queue and not a library:
+every entry exits by being promoted here, pushed down into a project, or dropped as
+not-a-pattern. **One file, not one per domain** - the floor of two independent sightings is
+unreachable from inside a single domain, and per-domain carry-forward already exists as
+`memory/`. An entry that will not exit is the signal that something is mis-filed.
+
 **To amend it, petition — do not edit locally.** A session that hits something this document gets
 wrong or fails to cover writes the proposed text out in full and opens it against
 <https://github.com/sear-labs/code-standard> — as a pull request where it has access, or as a
@@ -723,6 +747,53 @@ The presence or absence of a date **is** the update rule. Nothing enforces it, n
 fail to run, and it behaves identically on a phone. Archive a superseded summary by writing
 the new one dated — not by deleting the old.
 
+**Append-only governs a file's claims, not its cross-references.** A dated file is never
+rewritten to change what it said. Exactly one edit is permitted afterwards:
+
+    > **SUPERSEDED by [YYYY-MM-DD[x]-slug](...). <one sentence on what changed.>**
+
+at the top, or under the heading of the one section that was overtaken. It asserts nothing
+about the subject - it tells a reader who arrived at an old file that a newer one exists.
+Without it, append-only guarantees that **the stalest document is the one a search finds
+first.** The successor cites the predecessor in turn, so the relation survives either file
+being read alone. **And the index carries it**: a supersession that is not in the index has
+not happened, because the index is the read path.
+
+**An undated file's staleness is a mechanical check, not a stamp.** It carries a `Verified
+<date>` line recording when its claims were last checked against reality - the one thing
+version control cannot know - while its modified date comes from git and cannot drift. **It is
+stale when modified is later than verified.** Measured across 16 such files on 2026-09-07:
+five carried a verified date, one carried a date three months in the future, and three had
+been modified days after the stamp they still displayed. **A stamp older than its own content
+is worse than no stamp**, because it asserts a check that never covered the current text.
+
+**The date goes inside the file and never in its name.** Presence or absence of a date in the
+*name* is the entire discriminator above; a dated name on a living file inverts its rule.
+
+**An undated file lives beside what it is about. The subject decides the home; the form does
+not.** A folder of them belongs to its own subject - a notebook about tooling holds briefings
+about tooling - and a briefing about a project lives in that project, however it is written.
+Three forms share the one update rule:
+
+    reference state    what is true now about a topic, read cold by someone with no context
+    executable prompt  a job to hand over, with the decisions already made
+    editorial          what a body of work concluded, what it is FOR, and what to carry into
+      carry-forward    the next thing - argued, not summarised
+
+**The third is the one that goes unwritten**, because it reads like conversation and so feels
+already said. It is not a summary and not a status page, and it is usually the only place the
+reason behind a decision survives once that decision's outputs are finished.
+
+**There is no fifth location.** A file's location and name declare its update rule before
+anyone opens it, and that is a precondition for writing one - not a description of where
+things ended up. A document that fits none of these does not get a new folder: it gets
+classified, or it is not written. **A folder accumulating documents belonging to none of them
+is a defect in the taxonomy rather than a place** - either it earns an archetype in this Part
+with its own stated update rule, or its contents are pushed down into what they describe and
+it is retired. On 2026-09-07 one such folder held 209 MB and 88 documents with six of its
+seven subfolders carrying no history at all, because every session that had something to write
+and no legal place to put it wrote there.
+
 This is weaker than git and the weakness should be stated plainly: no commits, no branches,
 no `git log`, no atomic multi-file change. What it buys is that every device can write. For
 raw capture — ideas, journals, notes — that trade is correct, and the convention above has
@@ -878,8 +949,11 @@ inconvenient; one whose reason is not gets "tidied" within a year.
     <folder>/.git or .git pointer      only if git was chosen
     the GitHub repository              only if a remote was chosen
     a bundle or mirror                 only if the repo has no remote and needs a backup
+    ~/.claude/projects/<key>/<uuid>/    AUTOMATIC, and only if a session spawned a subagent
+                                       or overran a tool result. Subagent transcripts and
+                                       spilled output. Goes with the transcript.
 
-Six things, of which **one is created without being asked for and none is removed
+Seven things, of which **two are created without being asked for and none is removed
 automatically.** That asymmetry is what produces orphans.
 
 ### Git: when, and when not
@@ -953,6 +1027,57 @@ Deleting the folder handles three of them. **The other four are why orphans accu
 count and the tracked count, and only then remove the original. And verify "it is all pushed"
 rather than accepting it: check `git log --branches --not --remotes`, and compare local tags
 against the remote's **peeled** refs.
+
+### Retiring a record
+
+**A session leaves three kinds of thing behind and only one may be deleted on a schedule.**
+
+    RECORD    verbatim, written by the harness, never edited, grows without bound
+              ~/.claude/projects/<key>/*.jsonl and everything under <key>/<uuid>/
+              ~/.claude/shell-snapshots/, sessions/, backups/
+    CURATED   written deliberately, small, and the reason a record can be deleted
+              memory/, dated notes, undated briefings, a project's Part 11,
+              ~/.claude/CLAUDE.md, this document
+    CONFIG    neither a record nor a summary; deleting it changes how sessions behave
+              ~/.claude/settings.json - permissions AND hooks - settings.local.json,
+              scheduled tasks
+
+**A record is deletable and a curated artifact is not.** That is the whole retention policy.
+
+**Harvest, then delete.** *Before deleting anything, verify the replacement exists* applies
+here unchanged, because a record's replacement is a curated artifact:
+
+    1  a NAMED curated artifact holds what the record held - it need NOT be in that folder
+    2  a dated note records the harvest, arguing what mattered rather than listing ids
+    3  the CONFIG surface is copied out first
+    4  only then delete the .jsonl and its <uuid>/ directory
+
+**Step 1 names an artifact; it does not check a directory.** A gate reading "the folder has a
+non-empty `memory/`" fails the first correct case it meets - a session working in one folder
+whose harvest belongs, by the routing table in Part 0, in another. **A gate that blocks the
+routing rule's own outcome is the wrong gate.**
+
+**An empty `memory/` is a signal to look, not a verdict.** Check every place a session can
+write, the project folder included. On 2026-09-07 the folder with the most at stake had no
+memory file at all, and a subfolder holding the full editorial summary of the same work.
+
+**Age is not the criterion.** The oldest record is as likely as any to be the valuable one,
+and the largest are usually the ones already summarised. A rule that deletes by age deletes by
+the one property that does not predict value.
+
+**A fact recovered from a record cites the record it came from**, for as long as that record
+exists. Afterwards the citation is the only evidence that the fact was read rather than
+recalled.
+
+**Archiving a session is not deleting its transcript.** Two operations on two objects, and the
+second is not implied by the first.
+
+**Configuration leaves before the record does, and a script it names lives in a repository.**
+A hook is executable behaviour, not a preference: removed during a cleanup it does not fail
+loudly, it simply stops happening. Config mostly should not sync either, because a hook names
+an absolute local path and a synced copy points at nothing on the second machine - failing
+silently, again. What travels between machines is the *intent*, which is an undated file's
+content; the script itself belongs in a repository and never beside the config.
 
 ### Finding what was already left behind
 
@@ -2214,3 +2339,6 @@ an unpeeled tag ref: a difference at the wrong layer reads as a difference in su
 > Put it at the bottom.
 >
 > **The boundary:** keep both copies on purpose — and make one assertion compare them.
+>
+> **Records:** would a stale copy mislead, or merely be old? The first is overwritten, the
+> second is never rewritten — and neither is deleted until something curated holds what it held.
