@@ -615,6 +615,17 @@ archetype at all; **Part 2b** covers their shape. Reaching for one because the t
 is how a proposal folder of Word and Excel acquires a `src/` directory and a test suite nobody
 runs.
 
+**A is the safe default while a project is finding its shape — but only where the archetype's
+delta is additive.** E is A plus tracking, and tracking can be added in an afternoon; a project
+that starts in A and grows into E has lost nothing. **F is not additive.** Its sidecar metadata
+is a capture-time requirement, and a project that collects for a semester without it has lost
+the calibration, the operator and the conditions permanently — there is no later pass that
+recovers them. **Start in F where anything is being measured; start in A everywhere else.**
+
+The same test applies to any archetype added later: ask whether its delta can be added later.
+Where it can, A first is correct and the archetype arrives when it is needed. Where the delta
+happens at the moment data is captured, choosing it late is choosing it never.
+
 **A — Batch analysis pipeline** *(default for research code)*
 `config.yaml`, `scenarios/`, `data/{raw,interim,processed}/`, `src/<pkg>/`,
 `scripts/run_all.py`, `notebooks/`, `results/{figures,tables}/`, `tests/`.
@@ -646,14 +657,92 @@ pretending GPU bit-exactness.
 
 **F — Acquisition.** Raw immutability is critical, not merely good practice — you
 cannot re-collect a run. Sidecar metadata per raw file: instrument, operator,
-calibration, conditions, software version. `run_all.py` doesn't apply; the
-*analysis* is a separate archetype-A project reading acquisition output as raw.
+calibration, conditions, software version. `run_all.py` doesn't apply to the capture itself; the
+*analysis* is archetype A reading acquisition output as raw. Whether that is a second repository
+or a second half of this one is decided by *Split when someone consumes one half without the
+other*, below — most often it is one repository with a freeze test on `data/raw/`.
 
-**Mixed projects are normal.** A + B is common. A + C should be *split* into a
-library repo with real tests and an analysis repo that depends on it — don't make
-one repo satisfy both rigor levels. **A + T is the subject of Part 4.**
+**Mixed projects are normal.** A + B is common; A + C and A + F both occur. Two questions
+follow and they have different answers — *do these belong in one repository*, and *what does one
+repository holding both actually look like*. **A + T is the subject of Part 4.**
+
+#### Split when someone consumes one half without the other
+
+This rule previously said A + C should be split into a library repo and an analysis repo, and
+Archetype F said the analysis is a separate archetype-A project. Both stated a **repo count**,
+and a repo count is not what either was protecting:
+
+    A + C protects two RIGOR LEVELS    a library others import is a contract and needs real
+                                       coverage; an analysis is not, and does not
+    A + F protects two LIFETIMES       raw capture is append-only forever; the analysis that
+                                       reads it is rewritten weekly
+
+Two repositories do enforce those properties. They are not the only thing that does — **Archetype
+P already keeps an archived original and a maintained implementation in one repository, with a
+test that fails if the archived half changes.** That is the same boundary enforced inside one
+tree, and it has been in this document longer than the split rule has.
+
+> **Split when someone consumes one half without the other. Otherwise keep one repository and
+> enforce the boundary with a test that fails.**
+
+    a package a second repo imports              SPLIT - it now has outside consumers
+    a library published for strangers            SPLIT
+    a dashboard showing only this project        one repo
+    instrument output only this analysis reads   one repo, with the freeze test below
+    a proposal and the code behind it            neither - see Part 2b
+
+**The discriminator is a second consumer, not a second concern.** Every project has several
+concerns and almost none of them earn a second repository, a second licence, a second CI
+configuration and a second thing a reader has to find and clone.
+
+**"Someone" includes you, later, from another repo.** The moment a second project imports the
+package it has outside consumers and the higher bar applies. That event is the trigger — not a
+judgement about how library-like the code looks.
+
+#### Archetypes compose by adding obligations, not directories
+
+The error this prevents is reading two archetypes and concatenating their directory listings.
+
+**A + C adds no directories at all.** Archetype A already has `src/<pkg>/`. What C contributes is
+rigor applied to a directory that already exists — real coverage rather than a smoke test,
+SemVer, a `CHANGELOG.md`, a public API that does not break. C's *drop the data tiers* delta
+applies to a **standalone** library; inside A + C the tiers stay, because the analysis still
+needs them. The only new file is the changelog.
+
+**A + F adds sidecar metadata and a test, inside a directory A already has.** F's raw is
+`data/raw/` held to a stricter standard, not a parallel tree:
+
+    data/raw/2026-09-08-run045/reading.csv
+    data/raw/2026-09-08-run045/reading.meta.yaml   instrument, operator, calibration,
+                                                   conditions, software version
+    data/raw/MANIFEST.sha256                       committed
+    tests/test_raw_frozen.py                       recomputes it - and must be watched to fail
+
+**Two `src/` trees or two `data/` trees is the diagnostic.** If composing produced either, the
+repository holds two projects rather than one project with two archetypes, and that is the case
+the split rule above is for.
+
+#### Frozen and append-only are different tests
+
+P's archived original is **frozen**: the test asserts nothing changed, and that is right, because
+the original's job is to say what the paper did.
+
+F's raw is **append-only**: it grows at every collection. A frozen test there goes red on correct
+behaviour, and **a test that fires on correct behaviour is worse than no test** — deleting it is
+the rational response, and the boundary goes with it. Assert instead that nothing *already
+recorded* changed: a committed manifest of hashes, recomputed, where new entries append and
+modified entries fail.
+
+The distinction generalises. Before writing a boundary test, ask whether the thing it guards is
+finished or still growing; the same assertion is correct for the first and self-deleting for the
+second.
 
 **P — Published model, reimplemented** *(the result exists; the code that made it is being replaced)*
+
+**Publishing an Archetype A repository does not make it P.** P requires an original in another
+tool that produced the published numbers and is now being replaced. Code written in Python from
+the start has no such original: when it is published it stays A and takes the journal-and-year
+suffix, a tag and a deposit. It becomes P only if someone later reimplements it.
 
 Archetype A, plus a preserved original and the machinery that keeps the two honest. Reach for
 it whenever a published number was produced by code you are now replacing — a GAMS model
