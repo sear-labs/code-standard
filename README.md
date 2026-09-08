@@ -2,6 +2,12 @@
 
 The engineering and teaching conventions for the SEAR Lab (Erick C. Jones Jr., IMSE, UT Arlington).
 
+> ### New here? Start with this.
+> **[GETTING-STARTED.md](GETTING-STARTED.md)** — your first week, in four actions. Naming a repo,
+> creating it in the organisation, writing `.gitignore` before the first commit, and the Archetype
+> A directory shape. Includes a prompt to paste into Claude Code and a by-hand equivalent.
+> Read that before this document.
+
 > ### New machine?
 > **[NEW-MACHINE.md](NEW-MACHINE.md)** — a prompt to paste into Claude Code. It sets git's default
 > branch, clones this repo, and adds the pointer to your global `CLAUDE.md` without overwriting it.
