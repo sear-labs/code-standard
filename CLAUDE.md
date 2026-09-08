@@ -1533,6 +1533,54 @@ the loaded version teach *more* than the literals it replaces, not less:
    and the check, and the assertion stays green. A check that punishes
    experimenting is a check that gets switched off.
 
+#### And the table has to be reachable from wherever the notebook runs
+
+`data/raw/` is a path, and a path is true of the development machine. Three of
+this organisation's repositories reached that conclusion separately and answered
+it three different ways, which is the signal that the standard was silent rather
+than that the projects disagreed:
+
+    clone the whole repo in the setup cell        works; needs git and a public repo
+    vendor a second copy of every CSV into the    works; two copies of every table,
+      package, with a drift test                    plus a guard to watch them
+    read a raw file URL in the notebook           works; the URL is then written
+                                                    out once per notebook
+
+**The reason any of this is needed is that `pip install git+https://…` ships the
+package and NOT `data/`.** A data directory at the repository root is not package
+data and never enters the wheel — which is already recorded in Part 6 as a defect
+that shipped in three published repositories.
+
+**Resolve it in one function in the package, local copy first:**
+
+    an explicit argument        a test, or a reader's own copy
+    an environment variable     an override that needs no code change
+    data/raw/ beside the code   a clone, or an editable install
+    data/raw/ under the cwd     a notebook that has chdir'd into place
+    the published raw URL       everything else
+
+**Local must win, and that is not a preference.** This section tells the reader to
+edit a value in `data/raw/` and re-run, and the agreement assertion is supposed to
+stay green because both halves picked up the edit. If the URL won, the edit would
+do nothing at all — silently — and the notebook would go on reporting the numbers
+on the published branch. Nothing fails; the reader is simply misled. **Test that
+one case by name.**
+
+Prefer the URL fallback to a vendored copy. It is one copy of each table, on the
+published branch, and it needs no drift guard — the second copy is the thing that
+goes stale, and a guard that watches it is a second thing to maintain.
+
+> **The URL names a ref, and for anything handed to students that ref is a
+> release tag.** `main` moves. A notebook fetching `main` silently changes its
+> answer when somebody edits a table, which is *every number in the prose comes
+> from a run* failing from the outside in. Part 1 rule 8 already says to tag what
+> you hand out; this is where it bites.
+
+**None of this gets round the repository being private.** Measured 2026-09-07: a
+`raw.githubusercontent.com` URL on a private repository returns **404**, exactly
+as `git clone` fails on one. The loading strategy is not what makes a notebook
+reachable — publishing is. Decide that first and separately.
+
 ### The shape: two folders, three roles
 
 ```
