@@ -1559,6 +1559,13 @@ that shipped in three published repositories.
     data/raw/ under the cwd     a notebook that has chdir'd into place
     the published raw URL       everything else
 
+**The first two are NAMED, and a named location is honoured or refused — never silently
+replaced by the next candidate.** Falling through hands a caller who pointed at their own
+modified copy the numbers from the published branch, with nothing reporting it — the same
+failure this section identifies for the URL-winning case, one position earlier in the list.
+The later candidates are guesses and may fall through; an explicit argument and an
+environment variable are instructions and may not.
+
 **Local must win, and that is not a preference.** This section tells the reader to
 edit a value in `data/raw/` and re-run, and the agreement assertion is supposed to
 stay green because both halves picked up the edit. If the URL won, the edit would
