@@ -784,19 +784,33 @@ are paying rather than reasoning from the language's licence.
 
 **Measured 2026-09-11**, on the two repositories that set the boundary. One R layer read
 raw GAMS output from restricted workbooks, derived nine reported quantities, and persisted
-them only into an R workspace image: 2,776 lines that cannot run for anyone, because
-neither the inputs nor the intermediate is distributable. It was archived. Another R
-"reporting" directory turned out to hold a Markov chain generating model *inputs*; a
-reader must re-run that, and it was ported. The language was the same in both cases and
-decided neither.
+them only into an R workspace image. No *reader* can run it, because neither the inputs nor
+the image is distributable. It was archived. Another R "reporting" directory turned out to
+hold a Markov chain generating model *inputs*; a reader must re-run that, and it was ported.
+The language was the same in both cases and decided neither.
 
-**Archiving is not a way to avoid the work.** The layer above still had three genuine
-defects — it parsed raw solver output instead of a cleaned tier, it committed no cleaned
-output, and it was a notebook where a figure stage wants a script. None of those is named
-by a language rule, and all three survive the decision to archive. A language rule was
-about to be used to catch them, and would have prescribed the wrong remedy: porting 2,776
-lines no reader will execute, while leaving the raw-parsing and the missing cleaned tier
-exactly where they were.
+> **"No reader can run it" is the claim. "Nobody can run it" is not, and this document said
+> the second for several hours.** The archived layer was then re-run by its author, from a
+> private drive, and reproduced the published figures. That does not weaken the archive
+> decision — the test asks about a reader — but the reason originally given was false, and
+> false in the direction that flatters the decision. **State the test, not a convenient
+> stronger version of it**, and be suspicious when a rule's justification is easier to say
+> than the rule.
+
+**Archiving is a decision about a stage, not a certificate about its condition.** The layer
+above still had three genuine defects — it parsed raw solver output instead of a cleaned
+tier, it committed no cleaned output, and it was a notebook where a figure stage wants a
+script. None of those is named by a language rule, and all three survive the decision to
+archive. A language rule was about to be used to catch them, and would have prescribed the
+wrong remedy: porting 2,776 lines no reader will execute, while leaving the raw-parsing and
+the missing cleaned tier exactly where they were.
+
+**The archived stage's OUTPUT still has to be committed, and that is what makes archiving
+safe rather than convenient.** Extracting those aggregates from the workspace image took one
+script and produced 31 tables at 126 KB, after which the paper's own numbers were checkable
+with no R, no solver and no restricted input. Archive the producer; commit what it produced.
+An archived stage whose output is not committed has not been archived, it has been
+abandoned.
 
     model-gams/ or archive/       the original, verbatim, never edited, never maintained
     src/<pkg>/                    the maintained implementation
