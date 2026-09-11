@@ -757,7 +757,60 @@ being packaged.
 This applies on **both sides of the pipeline**, and forgetting the second side is the common
 error. A repo that ports its GAMS model to Python and leaves the analysis in R has not
 reduced the number of languages a reader must have — it has moved the barrier from the model
-to the figures. Port the model *and* the reporting; archive both originals.
+to the figures.
+
+> **Port the model *and* the reporting — but the test is the stage, not the file.** A
+> stage a reader must re-run is ported. A stage that ran once and committed its output is
+> archived, whatever language it is in. That is the test the archived original already
+> passes: GAMS is tolerated not because it is a model, but because nobody runs it again.
+
+**Three questions decide it, and none of them is the language:**
+
+    must a reader re-run it?         re-run -> port.  runs once -> archive, and freeze it
+                                     with the rest of the archived original
+    does it compute a REPORTED       yes -> its output is committed cleaned output, and
+      quantity?                      something must verify it. This holds either way; it
+                                     is what makes archiving the producer safe
+    does it generate model INPUTS?   yes -> port regardless. RNG streams do not cross
+                                     languages: a seed set in R is unreachable from
+                                     Python, so the reproducibility claim would span two
+                                     implementations with nothing able to bridge them
+
+**A free language is not automatically fine, and a proprietary one is not automatically
+fatal.** Where a stage must be re-run, a second toolchain is a second thing to pin, lock
+and prove on a clean clone, and Part 1 rule 3 applies to it in full — the cost there is
+maintenance, not access. Where a stage runs once, neither cost is paid. Say which one you
+are paying rather than reasoning from the language's licence.
+
+**Measured 2026-09-11**, on the two repositories that set the boundary. One R layer read
+raw GAMS output from restricted workbooks, derived nine reported quantities, and persisted
+them only into an R workspace image. No *reader* can run it, because neither the inputs nor
+the image is distributable. It was archived. Another R "reporting" directory turned out to
+hold a Markov chain generating model *inputs*; a reader must re-run that, and it was ported.
+The language was the same in both cases and decided neither.
+
+> **"No reader can run it" is the claim. "Nobody can run it" is not, and this document said
+> the second for several hours.** The archived layer was then re-run by its author, from a
+> private drive, and reproduced the published figures. That does not weaken the archive
+> decision — the test asks about a reader — but the reason originally given was false, and
+> false in the direction that flatters the decision. **State the test, not a convenient
+> stronger version of it**, and be suspicious when a rule's justification is easier to say
+> than the rule.
+
+**Archiving is a decision about a stage, not a certificate about its condition.** The layer
+above still had three genuine defects — it parsed raw solver output instead of a cleaned
+tier, it committed no cleaned output, and it was a notebook where a figure stage wants a
+script. None of those is named by a language rule, and all three survive the decision to
+archive. A language rule was about to be used to catch them, and would have prescribed the
+wrong remedy: porting 2,776 lines no reader will execute, while leaving the raw-parsing and
+the missing cleaned tier exactly where they were.
+
+**The archived stage's OUTPUT still has to be committed, and that is what makes archiving
+safe rather than convenient.** Extracting those aggregates from the workspace image took one
+script and produced 31 tables at 126 KB, after which the paper's own numbers were checkable
+with no R, no solver and no restricted input. Archive the producer; commit what it produced.
+An archived stage whose output is not committed has not been archived, it has been
+abandoned.
 
     model-gams/ or archive/       the original, verbatim, never edited, never maintained
     src/<pkg>/                    the maintained implementation
@@ -783,7 +836,10 @@ everything and "input, interim, output" stops distinguishing them.
     raw output           the original tool's output. Gitignored
     clean-up output code
     cleaned output       tidy, long-format. COMMITTED - this is what everything reads
-    analysis code        .py, not notebook, and not another language
+    analysis code        .py, not notebook - or archived with the original it
+                         belongs to, where a reader never re-runs it. The stage
+                         test above decides which; a stage that generates model
+                         inputs is ported even when it looks like reporting
     figures              regenerated by a script, never by running a notebook
 
 **Stages may be empty, and the list is not nine required directories.** Where the original
