@@ -1,0 +1,8 @@
+# The repo that ships gitignore-starter should not be the one committing a .pyc.
+__pycache__/
+*.py[cod]
+.ruff_cache/
+.pytest_cache/
+.DS_Store
+Thumbs.db
+desktop.ini
