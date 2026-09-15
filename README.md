@@ -49,6 +49,7 @@ A pointer costs one deliberate read, cannot drift, and cannot be edited into a c
 |---|---|
 | `CLAUDE.md` | The standard. Read it; do not copy it. |
 | `gitignore-starter` | Rename to `.gitignore` and commit it **first**, before any other file. |
+| `templates/` | Scaffolding that **is** copied — a licence-free smoke test, a CI workflow, `CITATION.cff`. See [`templates/README.md`](templates/README.md) for why copying is right here and wrong for the document. |
 
 ## The order that matters when starting a project
 
@@ -59,6 +60,10 @@ One of these cannot be undone, so the sequence is not cosmetic:
 3. **`git check-ignore -v <each secret file>`** — verify the pattern matched; do not assume
 4. `git add . && git status` — read the list before committing
 5. First commit
+6. `cp -r templates/tests templates/.github .` — then run them, then break something and watch
+   them fail. [`templates/README.md`](templates/README.md) also lists the bring-up steps that are
+   **not** files, and are skipped for that reason: topics, description, the name checked against
+   the publication record.
 
 **A credential in git history means rotating the credential, not amending the commit.** Everything
 else in the standard is a preference you can revisit; this one is not.

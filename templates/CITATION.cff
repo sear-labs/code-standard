@@ -1,0 +1,53 @@
+# Copy to CITATION.cff in the repo root. GitHub renders a "Cite this
+# repository" button from it, which is the whole point: people cite what is
+# easy to cite, and friction is what stops them.
+#
+# Three things this template exists to get right, because all three have been
+# got wrong in this organisation:
+#
+# 1. name-suffix. A citation IS identity metadata, and a dropped generational
+#    suffix names a different person. `Jones, Erick C., Jr.` -- and note that
+#    BibTeX reads a three-part name as {Last, Jr, First}, so `{Jones, Jr.,
+#    Erick C.}` there. Written in MLA order it silently swaps the two fields.
+#
+# 2. The author list is the PAPER's, not the project's. Someone on the class
+#    team who did not write the paper is not an author, and a wrong list here
+#    propagates into every reference manager that used the button.
+#
+# 3. No `doi:` field until one exists. Add the CONCEPT DOI after the first
+#    Zenodo release -- it always resolves to the latest version and never
+#    changes, so it is a one-time edit, not a per-release chore. The version
+#    DOI is not what goes here. Never guess a DOI.
+
+cff-version: 1.2.0
+message: "If you use this code, please cite the paper below."
+title: "<repo-name>"
+type: software
+authors:
+  - family-names: <Surname>
+    given-names: <Given names>
+    affiliation: "University of Texas at Arlington"
+repository-code: "https://github.com/sear-labs/<repo-name>"
+license: MIT
+keywords:
+  - <both halves of the name: subject AND method>
+  - optimization
+  - operations research
+
+# Delete this block if the repo is not behind a publication. An invented
+# venue asserts a publication that does not exist.
+preferred-citation:
+  type: article            # or conference-paper
+  title: "<Paper title exactly as published>"
+  year: <YYYY>
+  journal: "<Journal name>"        # for type: article
+  volume: <n>
+  issue: <n>
+  start: <page or article number>
+  doi: "<the PAPER's doi, which you have; not the code's, which you may not>"
+  authors:
+    - family-names: <Surname>
+      given-names: <Given names>
+    - family-names: Jones
+      given-names: Erick C.
+      name-suffix: Jr.

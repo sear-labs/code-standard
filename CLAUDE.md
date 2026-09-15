@@ -392,6 +392,13 @@ the rule wins unless overridden explicitly.
    does it run end to end, are the outputs sane. The clean machine matters more
    than the test count — it catches "works on my laptop."
 
+   **`templates/` in this repository carries both, ready to copy** — a smoke test that needs no
+   solver and a workflow that needs no configuration. This rule was, until 2026-09-15, described
+   here and shipped nowhere, and the result was measurable: seven repositories migrated in one
+   morning, each with a `tests/` directory holding a single `.gitkeep` and no CI. **An empty
+   `tests/` fails silently and reads as passing**, which is worse than no directory at all. If
+   tests are genuinely deferred, ship one that skips with a reason.
+
 7. **The README says how to run it.** Install, run, expected inputs, expected
    outputs, what's deliberately committed. Written for a stranger, or for you in
    eighteen months.
@@ -2272,7 +2279,12 @@ Flag these on sight:
 
 ---
 
-## Part 10 — Two things to copy
+## Part 10 — Things to copy
+
+The two below are prose, and belong here. The **files** to copy are in
+[`templates/`](templates/README.md) — a smoke test, a CI workflow and a `CITATION.cff`, each
+carrying its guidance in its own comments. That directory's README also lists the bring-up steps
+that are not files at all, which is why they are the ones that get skipped.
 
 ### The pre-ship checklist
 
