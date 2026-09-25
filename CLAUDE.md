@@ -2700,7 +2700,7 @@ tuning a threshold is how a check acquires a case nobody has tested.
 above creates deliberately, and a silent pass there would hide exactly the repositories
 whose backup situation is least automatic.
 
-### Eight traps, each one a check that agreed with itself
+### Traps, each one a check that agreed with itself
 
 Every entry below produced a confident wrong answer, and in each the tool reported success.
 They are recorded individually because the general rule — *verify the outcome, not the step* —
@@ -2787,6 +2787,31 @@ it** — the extra objects were the commit and tree containers, not content.
 
 **Stop at the blob level, or the analysis manufactures alarm.** The same shape as comparing
 an unpeeled tag ref: a difference at the wrong layer reads as a difference in substance.
+
+#### A backslash passes through more interpreters than you wrote
+
+"Use raw strings" handles one layer, the language literal. A backslash in a command may also be
+read by the tool call that carries it, the shell, a heredoc, `printf`, a regex (whose *pattern*
+and *replacement* have different syntaxes, so `\1` in a replacement is a backreference), and a
+JSON encoder. Each may consume a level, and most consumptions are legal: `\b` and `\f` became
+control characters with no warning, and the one warning that fired named `\s`, **the survivor,
+not the casualties.** The silent losses cluster where zero is the desired answer: `\+` in a
+regex meant to prove absence matched nothing and reported success.
+
+**Name every layer before writing the backslash, and check the parsed value, not the file.** A
+JSON round-trip re-encodes a control character as the text `\b`, so a byte scan comes back clean
+while the value is corrupt. To repair, build the character (`chr(92)`), write through a script
+file rather than a heredoc, and assert the rewrite count after re-reading from disk, because a
+repair that matched nothing reports success as well.
+
+#### A leading dot is not an extension separator
+
+`os.path.splitext('.env')` returns `('.env', '')`, and `pathlib`'s `.suffix` agrees: to Python, a
+name that *starts* with a dot has no extension. So a scan that selects by extension skips every
+`.env` and reports clean, and a validator that types files by extension flags every
+`_rels/.rels`, which its package format types by the text after the last dot. One call, one
+silent miss, one false alarm. **Decide what "type" means for the consumer, write it once as a
+function, and give its canary a dotfile.**
 
 ---
 
