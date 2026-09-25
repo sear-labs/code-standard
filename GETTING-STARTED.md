@@ -63,6 +63,13 @@ and a run cannot be re-collected. Everyone else: Archetype A.
 cannot be retrofitted: if everything lands in one folder for six months, what derived from what
 is gone, and no amount of later tidying recovers it.
 
+**Word, PowerPoint and PDF deliverables stay on the Drive; the repository holds code and small
+data.** Git keeps every version of every file forever, so a slide deck committed once is carried
+by every clone for the life of the project, and deleting it later shrinks nothing. This bites
+hardest when you move a whole Drive folder in: bring the code across and leave the documents.
+The exception is a figure your code *generates* — commit that on purpose, and say so in
+the README.
+
 ### 3. Write `.gitignore` before the first commit — and verify it
 
 This is the one mistake in the standard that cannot be undone. Git history is permanent: a
@@ -121,7 +128,8 @@ lands.
 > 1. Write `.gitignore` first, before anything is committed. It must ignore the *contents* of
 >    `data/` while still tracking a `.gitkeep` in each tier, so the shape survives a clone —
 >    `data/**`, then `!data/**/`, then `!data/**/.gitkeep`. It must also cover `.env`, virtual
->    environments and notebook checkpoints. Then run `git check-ignore -v` against a real data
+>    environments, notebook checkpoints, and Word and PowerPoint files (`*.docx`, `*.pptx`).
+>    Then run `git check-ignore -v` against a real data
 >    file and show me the output. Do not proceed until it prints a match.
 > 2. Create the Archetype A directory shape, with a `.gitkeep` in each empty directory.
 > 3. Write `pyproject.toml` so `pip install -e .` works. Pin every dependency with an upper
@@ -135,6 +143,9 @@ lands.
 >    it.
 > 8. Write `CLAUDE.md` in the root: one line pointing at the standard's URL, one line naming
 >    Archetype A, and one line saying what the project is.
+>
+> If I ask you to bring an existing folder into this repo, copy code and small data only, and
+> list the Word, PowerPoint and PDF files you left behind.
 >
 > Show me the diff before committing. Do not commit anything you have not shown me.
 
@@ -158,6 +169,8 @@ data/**
 .venv/
 __pycache__/
 .ipynb_checkpoints/
+*.docx
+*.pptx
 EOF
 mkdir -p data/{raw,interim,processed} src scripts notebooks results/{figures,tables} tests
 find data results -type d -exec touch {}/.gitkeep \;
