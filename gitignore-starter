@@ -29,6 +29,15 @@ data/interim/*
 data/processed/*
 !data/**/.gitkeep
 
+# --- personal exports: never versioned, never published ------------------
+Social Media/
+takeout*/
+*Takeout*
+facebook-*/
+instagram-*/
+mydata~*.zip
+Basic_LinkedInDataExport*
+
 # --- generated results ---------------------------------------------------
 # Deliberate exception (see standard Part 1 rule 5 and Part 5): final figures
 # and tables ARE committed, so a reader sees outputs without running anything.
