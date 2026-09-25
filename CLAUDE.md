@@ -2466,6 +2466,22 @@ git commit -m "message" -- path/one.md path/two.md
 with `a.txt` staged by a simulated other session, `git add b.txt && git commit` committed *both*;
 `git commit -- b.txt` committed only `b.txt` and left `a.txt` staged.
 
+**A new file needs one more step, and it is where both recorded sweeps happened.** `git commit
+-- <path>` refuses a file git has never seen, and the natural recovery, `git add` and then a
+plain commit, is the pattern above. Stage your own new files by exact name, then commit with
+the same paths:
+
+    git add -- notes/new-note.md
+    git commit -m "message" -- notes/new-note.md README.md
+
+**Never stage by directory in a shared repo.** `git add -A notes` takes every untracked file
+under `notes/`, including another session's half-written one, because a path scope cannot
+express authorship. The result is a commit whose message is false about part of its content,
+and nothing reports it until someone asks the history who wrote a file. *(Optional, one
+sighting:)* A push is wider still, since it sends every local commit, including one another
+session left unpushed on purpose. Read `git log origin/<branch>..HEAD` before pushing from a
+shared clone.
+
 Otherwise:
 - **Commit is the handoff.** Before leaving a chat, have it commit its own work.
 - **Orient before writing.** New chat in a repo starts with `git log --oneline -5` and `git status`.
