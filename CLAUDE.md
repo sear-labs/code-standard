@@ -399,6 +399,25 @@ the rule wins unless overridden explicitly.
    `tests/` fails silently and reads as passing**, which is worse than no directory at all. If
    tests are genuinely deferred, ship one that skips with a reason.
 
+   **A push is finished when its CI run has been read, not when `git push` returns.** Read the
+   run for the commit you pushed (`gh run watch <id> --exit-status`) and report what it said.
+   Never merge a pull request whose checks are red or still running. If `main` is already red,
+   say so before adding to it: a change merged onto a red `main` has its own result hidden inside
+   the old failure. Branch protection, which would enforce this, is not available on private
+   repositories in a free organisation, so nothing on GitHub's side refuses the merge.
+
+   **A check that is always red stops being read.** Measured 2026-09-24: one repository's `main`
+   had failed on every run for fourteen days, and two merges landed on it unnoticed. Every table
+   matched; six figures differed only because a PNG drawn on a Linux runner is never
+   byte-identical to one drawn on a laptop. Compare exactly what carries the result, and test
+   everything else for the property that matters — that a figure was regenerated, not that its
+   bytes match. This is Part 2's *a test that fires on correct behaviour is worse than no test*,
+   met in CI.
+
+   **Somebody has to look across the organisation.** Failure emails arrive one push at a time and
+   become background. A scheduled digest of every red `main` and failing open pull request is
+   what turns fourteen days into one week at most.
+
 7. **The README says how to run it.** Install, run, expected inputs, expected
    outputs, what's deliberately committed. Written for a stranger, or for you in
    eighteen months.
