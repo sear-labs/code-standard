@@ -2555,6 +2555,20 @@ itself.** It is worst for absence checks — secret scans, “did the substituti
 “is the old name gone” — because there the *desired* answer and the *broken* answer are the same
 output, so nothing about the result invites a second look.
 
+**A working probe can still ask the wrong question.** The canary proves the tool fires. It does
+not prove the thing is *named, stored and served* where you looked, and each of the following
+zeros was a correct answer to the query and a false answer to the question: a deck searched by
+filename whose content sat in three other decks under other names; a folder spelled `Syllubus`;
+scraped text holding non-breaking spaces, so a multi-word match reported an updated page as
+unchanged; an API endpoint that lists one kind of quiz and not the newer kind; a topic present
+only as a column in a data file, at another scale. **Point the canary at a positive of the same
+kind as the target**: a known instance under a different name, encoding or endpoint. Where none
+exists, search on a second, independent key (content for a filename, a title for a path, a
+number for a word), and normalise before matching. **Report the query with the result.** "Not
+found under `X` in `Y`" is a measurement; "missing" is a conclusion the search never reached.
+*"No trace" requires enumerating replicas*, below, is the same failure with locations in place
+of names.
+
 #### A fourth corollary, 2026-09-04 — never conclude from sanitized output
 
 Checking whether a credential was in a repo's history, the output was piped through a redactor so
@@ -2571,6 +2585,24 @@ measure.
 > **Redact for display. To decide, ask a question whose ANSWER is safe to print** — a count, a
 > boolean, a length, a match against a known-safe placeholder. `grep -c "REDACTED-CREDENTIAL-ROTATED"`
 > returns `3` and leaks nothing.
+
+#### A fifth corollary — a key that is nearly unique is not an identity
+
+A hash, a basename, a project name or a folder's pattern identifies *almost* every case, and the
+exception is silent: the lookup resolves, the filter runs, the move is skipped, nothing raises.
+Measured in one reorganisation: notebook checkpoints guarantee MD5 twins, so a hash lookup
+returned the wrong file; a project name that was also a category and a substring of three
+siblings made a `not in {...}` hold-out cover one case of four, and 224 files moved; two parent
+folders with the same basename caused 145 files to be skipped. Elsewhere, a content hash grouped
+every empty file as a duplicate of every other.
+
+**Verifying what you did cannot find this.** All 224 moves verified perfectly: the question was
+never whether they landed but whether they should have been attempted. **Check the selection
+with a different kind of evidence than made it.** Resolve an exclusion to an explicit list of
+full paths and print it; key on the full relative path, not its last segment; use hash and name
+together, since each fails on the other's inputs; test a permission by attempting the read, not
+by the shape of what is missing. Before a delete, use the store's own identifier, which on a
+sync service is the file id and the only key that is actually unique.
 
 ### A scrub and a rotation are two claims with two kinds of evidence
 
