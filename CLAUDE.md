@@ -1875,6 +1875,22 @@ regenerating reproduces what shipped. A build script and its output drift exactl
 as fast as two pasted copies do, and for the same reason — nobody is comparing
 them.
 
+**The corollary reverses once anyone edits the output.** A generator is safe to re-run only while
+its output is a pure build product. Once a person types into it (a workbook handed out to be
+filled in, a deck touched up by hand, a register another team maintains), re-running destroys
+that work, and it does so silently: the generator runs, reports success, and nothing records the
+loss. **Say so where it is run**, not only in a README: have the script refuse to overwrite a
+file modified since it last wrote it, or write beside it and say so. Once the output becomes
+the source of truth, retire the generator, and leave a note beside the file saying it has
+been retired.
+
+**For a rendered image, "reproduces" has a limit, and the check must state it.** matplotlib
+writes its own version into every PNG, and a tight bounding box is computed from font metrics, so
+the same figure regenerated on another machine differs in bytes and even in pixel dimensions.
+Compare images byte-for-byte only on the machine that maintains them. Everywhere else, compare
+**presence**, and write beside the comparison that presence is all it checks. An exact comparison
+run anywhere else passes only on the machine that wrote the files.
+
 ---
 
 ### Corollary: the agreement assertion protects the models, not the checks
