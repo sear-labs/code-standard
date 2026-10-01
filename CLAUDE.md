@@ -2117,6 +2117,12 @@ correctly, because there is no defect. The defect is a **module-level** import r
 **eager** one. Against that, 8 of 10 such tests go red while a source grep still returns
 false.
 
+**The same holds for a fix: the probe that proves it is one that failed before it.** A
+whitespace-split fix was "verified" with injected files whose names had no space, and that probe
+passed before the fix too. Run the probe against the unfixed code and watch it fail. An
+injection can also change nothing because the code it breaks never runs, so show that the site
+executes before you read a green result as coverage.
+
 #### A check must be shown to fail
 
 **A guard that has only ever passed is indistinguishable from one that cannot fail.**
@@ -2146,6 +2152,27 @@ Two traps specific to guards of this kind, both found while fixing the one above
   A name comparison will quietly pass an undeclared import the day someone adds a package where the
   two differ. Record it as a known limit and add an explicit map — **do not loosen the check to
   accommodate it.**
+
+#### A passing check shows what it compared, by how much, and over what
+
+Watching a check fail proves it *can* fire. It does not show that the run in front of you
+compared the right thing, with room to spare, across everything its name claims. A check that
+prints only "passed" hides all three, and each has hidden a real defect:
+
+- **Against what: the authority, not a neighbour.** Assertions written against *displayed*
+  numbers test the rounding. A byte comparison against output the same machine just wrote
+  passes only there. Two worked examples compared with each other looked inconsistent, when both
+  were consistent and both contradicted their document's rule. **Copies meant to be identical
+  are compared with each other**, as Part 4 does. **Instances meant to follow a rule are each
+  compared with the rule.**
+- **By how much: print the margin.** Print the compared values and their difference, as the
+  agreement assertion does. A check that went vacuous whenever an error was exactly zero, and a
+  bit-exact comparison that failed only on CI, were each caught by a printed number.
+- **Over what: a check's name is a claim about its reach.** A test named "no absolute paths in
+  source" opened one file, and the leak it existed for shipped in a notebook it never read. A
+  style guard covers what is drawn through it, not a chart another library rasterised, and a
+  geometry check cannot see inside an image. Print the count of inputs actually read, and say
+  what the check does not cover.
 
 ---
 
