@@ -2008,6 +2008,21 @@ first release:
 For a paper repo, cross-reference both ways: the paper's DOI in `CITATION.cff`, the code's DOI in
 the paper's data-availability statement.
 
+**Make the tag yourself, on the exact commit, before releasing.** `gh release create vX --target
+<sha>` silently reuses an existing tag `vX` and ignores `--target`, and `gh release list` cannot
+warn you, because a tag can exist with no release. Zenodo then mints a DOI for the wrong commit, and
+a published version cannot be deleted, only superseded by the next one.
+
+    git ls-remote --tags origin                 # confirm vX is unused
+    git tag -a vX <sha> -m "..." && git push origin vX
+    git ls-remote origin "refs/tags/vX^{}"      # must print <sha>
+    gh release create vX --verify-tag
+
+(sear-labs/geothermal-siting-sustainability-2025, 2026-10-01: a student's v1.0.0 tag at her import
+commit, with no release, took the release. Zenodo published that commit without `.zenodo.json`,
+under the repo's old name and without the author's suffix and ORCID. v1.0.1 from the right commit
+superseded it.)
+
 ---
 
 ---
