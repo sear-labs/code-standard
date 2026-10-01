@@ -2497,11 +2497,24 @@ site's HTML, the file's bytes.
 | Writing a script | "it parsed" | run it |
 | Porting code | "it runs" | its output matches the original's |
 | A DNS change | "the site loads" | A **and** MX both still resolve |
+| Writing through an API | "it returned 2xx" | read the object back and find something only your write contains |
 
 **It runs in both directions.** One *failure* is not evidence either. An OSF token was reported
 broken on a single 401 and told to be regenerated; a retry returned 200. Against a flaky remote
 service, one call is not a measurement - retry before concluding a credential is dead, especially
 when the remedy is to destroy and replace a working one.
+
+**For a write, a reported failure is not the state either, and a retry is not neutral.** A
+create reported as rejected had already been applied, so retrying it would have made a
+duplicate. Before retrying any write that is not idempotent, read back whether it landed, and
+guard every create with a "does this already exist" check. The positive direction fails in the
+same way: an accepted-for-processing `202` has been observed producing no object at all, and a
+publish call printed success while cascading to children it never mentioned.
+
+**Compare what you read back by content, not by bytes.** Services rewrite what they store:
+they expand links and reorder attributes, so comparing sent bytes with stored bytes fails a good
+write. Search the parsed value for a phrase only your write contains. This is *state your
+normalisation* when the server normalises for you.
 
 The failure this prevents is the worst-shaped one: **nothing errors.** A push that succeeds against
 the wrong branch reports success at every layer, so the search starts by looking for a build failure
