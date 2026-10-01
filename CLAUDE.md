@@ -193,6 +193,12 @@ have received.
 So the question is never *“will they break it”*. It is whether the repository should be readable at
 all, which is a separate decision with separate reasons.
 
+**That decision is Jones's, every time: ask before changing any repository's visibility**, in
+either direction. Approving a Zenodo release is not approval to make the repo public at that
+moment; they are separate steps. If the release route needs the repo public, that is the moment to
+ask, not a reason to skip asking. (A session made a repo public early on 2026-10-01 after the
+release was approved. No harm was done, but Jones wanted a say first.)
+
 #### Which is what actually decides the teaching library: split it
 
 Two different things get called teaching material and they want opposite visibility:
@@ -590,6 +596,20 @@ DOI-registered, and a conference *is* known by its acronym, so the acronym is th
 than something derived from it:
 
     IISE Annual Conference 2020   ->  der-decomp-iise-2020
+
+**Then check that the result means something to a reader in the field.** Every route above can
+return a fragment that tells a reader nothing. MDPI encodes an alphabetic DOI stem, so rule 1 gives
+`en` for *Energies* and `su` for *Sustainability*. Keep the abbreviation only where a reader in the
+field would recognise it (`scs`, `trd`, `esd`, `ffutr`). Where it is just a fragment of the
+journal's name, spell the journal out instead (`energies`, `sustainability`, `logistics`). That is
+the journal's own title, not an invented abbreviation, so the rule above still holds, and it is why
+the example at the top reads `lithium-optsc-energies-2024` and not `lithium-optsc-en-2024`.
+
+**This is a judgement call, so a session proposes the name and Jones confirms it** before the repo
+is made public or released. Propose it with the route that produced it and the spelled-out
+alternative. A name freezes into badge URLs, install lines and the Zenodo record, and a rename after
+the first release breaks all three. (`geothermal-siting-su-2025` followed rule 1 literally; it was
+caught and renamed `geothermal-siting-sustainability-2025` before its first release, 2026-10-01.)
 
 **The discriminator is *published*, not *has a DOI*.** A DOI test has a false negative: a
 peer-reviewed conference paper at a venue that does not register DOIs fails it for a reason that has
@@ -2005,7 +2025,9 @@ one-time edit and not a per-release chore. The order is forced — you cannot ha
 first release:
 
 1. Add `CITATION.cff` with no `doi:` field
-2. Connect the repo in Zenodo, tag a release. **Set the licence on the deposit explicitly** —
+2. If the repo is private, ask Jones before making it public (see *Contributions from outside
+   the organisation*: approving the release is not approving the visibility change).
+   Connect the repo in Zenodo, tag a release. **Set the licence on the deposit explicitly** —
    it is a required field and it defaults to CC-BY, so a repo licensed MIT is deposited under
    a content licence unless you say otherwise.
 3. Zenodo mints both DOIs
@@ -2014,6 +2036,21 @@ first release:
 
 For a paper repo, cross-reference both ways: the paper's DOI in `CITATION.cff`, the code's DOI in
 the paper's data-availability statement.
+
+**Make the tag yourself, on the exact commit, before releasing.** `gh release create vX --target
+<sha>` silently reuses an existing tag `vX` and ignores `--target`, and `gh release list` cannot
+warn you, because a tag can exist with no release. Zenodo then mints a DOI for the wrong commit, and
+a published version cannot be deleted, only superseded by the next one.
+
+    git ls-remote --tags origin                 # confirm vX is unused
+    git tag -a vX <sha> -m "..." && git push origin vX
+    git ls-remote origin "refs/tags/vX^{}"      # must print <sha>
+    gh release create vX --verify-tag
+
+(sear-labs/geothermal-siting-sustainability-2025, 2026-10-01: a student's v1.0.0 tag at her import
+commit, with no release, took the release. Zenodo published that commit without `.zenodo.json`,
+under the repo's old name and without the author's suffix and ORCID. v1.0.1 from the right commit
+superseded it.)
 
 ---
 
