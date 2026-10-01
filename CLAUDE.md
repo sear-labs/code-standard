@@ -1287,9 +1287,10 @@ deleted, and it goes on reporting success until something asks it to fetch.
 
 ### Nothing is created for you, and that is the problem
 
-Opening a session in a folder creates **exactly one thing**: a path-keyed directory under
-`~/.claude/projects/`, which accumulates that folder's memory and transcripts. Everything
-else — git, a remote, a `CLAUDE.md`, a `.claude/` — exists only because somebody made it.
+Opening a session in a folder creates **exactly one lasting thing**: a path-keyed directory under
+`~/.claude/projects/`, which accumulates that folder's memory and transcripts. It also creates a
+per-session scratch directory that does not last (see below). Everything else — git, a remote,
+a `CLAUDE.md`, a `.claude/` — exists only because somebody made it.
 
 Nothing prompts for the decision, so in practice it is never made. A folder ends in whatever
 state its first session happened to leave it, and the reasoning is not recorded anywhere.
@@ -1322,9 +1323,21 @@ inconvenient; one whose reason is not gets "tidied" within a year.
     ~/.claude/projects/<key>/<uuid>/    AUTOMATIC, and only if a session spawned a subagent
                                        or overran a tool result. Subagent transcripts and
                                        spilled output. Goes with the transcript.
+    <temp>/.../<session>/scratchpad/   AUTOMATIC, per SESSION, not per folder. Outside the
+                                       project, not synced, not a record, not curated, and
+                                       emptied without asking.
 
-Seven things, of which **two are created without being asked for and none is removed
-automatically.** That asymmetry is what produces orphans.
+Eight things, of which **three are created without being asked for. Seven are never removed
+automatically, and the eighth is removed without asking.** Both halves of that asymmetry lose work.
+
+**A session's scratchpad is not storage.** It has the ergonomics of a working directory and the
+lifetime of a cache, and nothing in the session announces the difference. One session lost every
+build script behind a 42-slide deck when its scratchpad was stripped to an empty skeleton.
+Another left two finished deliverables there, with a published rendering as their only other
+copy. **A rendered or published output is not a copy of its source**: see *Corollary: generated
+artifacts*. **Name the destination in the project before generating anything durable**, and
+anything a deliverable depends on is durable. If work did start in the scratchpad, copying it out
+is part of declaring the work finished.
 
 ### Git: when, and when not
 
