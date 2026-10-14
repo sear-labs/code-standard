@@ -1359,6 +1359,14 @@ artifacts*. **Name the destination in the project before generating anything dur
 anything a deliverable depends on is durable. If work did start in the scratchpad, copying it out
 is part of declaring the work finished.
 
+**If Claude keeps a working log in a repository, name it `CLAUDE_LOG.md`. A student's journal is
+never a file in a repository.** The log records what a chat did and why, and its name says whose it
+is. A student journals in the project's *Lab Journal* Google Doc on the lab Drive and nowhere else.
+**Do not use `PROJECT_JOURNAL.md`.** By 2026-10-13, fourteen repositories had a Claude log by that
+name. Chats had copied it from a "the journal moves into the repo" proposal that sat in four
+governing documents and was never approved. In a shared repository a student can reasonably read
+`PROJECT_JOURNAL.md` as the place they are meant to write.
+
 ### Git: when, and when not
 
 **Use git when the thing changes and you would want to know what changed** — code, notebooks,
