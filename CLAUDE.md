@@ -1127,8 +1127,9 @@ a safeguard.
 
 **Use the sync service's own file versioning, and encode the update rule in the filename:**
 
-    dated    YYYY-MM-DD[letter]-slug.md   append-only. Never rewritten; a correction is a
-                                          new dated file citing the original.
+    dated    YYYY-MM-DD[letter]-slug.md   append-only after a 3-day grace period. Then
+                                          never rewritten; a correction is a new dated
+                                          file citing the original.
     undated  <topic>.md                   living. Overwritten in place, because a stale
                                           current-state doc misleads, while a stale dated
                                           one is merely history.
@@ -1137,8 +1138,26 @@ The presence or absence of a date **is** the update rule. Nothing enforces it, n
 fail to run, and it behaves identically on a phone. Archive a superseded summary by writing
 the new one dated — not by deleting the old.
 
-**Append-only governs a file's claims, not its cross-references.** A dated file is never
-rewritten to change what it said. Exactly one edit is permitted afterwards:
+**A dated file may be revised in place for three days after the date in its name.** A note or
+draft that is still being worked on should not become four files in one day. Once the three days
+pass, it is append-only and a correction is a new dated file. The window runs from the date *in
+the name*, not from when the file was created or last edited, so editing it cannot extend the
+window. Where the folder has git, the history keeps each revision; where it has none, the sync
+service's versioning does. **Two things never get the grace period:** raw captures (a `raw/`
+folder is never edited at all), and anything a build reads as a frozen input.
+
+> **Why (Jones, 2026-10-26, adopted for the standard 2026-11-06).** Two independent sightings:
+> - The ideas corpus adopted this rule locally for its drafts and dated brief companions, which
+>   were splitting into several files on the day they were written.
+> - In claude-notes, `notes/2026-11-01-talk-intro-highlight-convention.md` gained four
+>   "correction, later the same day" sections in one evening, each stacked under the claim it
+>   overturned. A reader had to reach the bottom to learn the current rule.
+>
+> Append-only exists so that history is not lost. In the first days the history is the author
+> still thinking, and git or sync versioning already keeps it.
+
+**Append-only governs a file's claims, not its cross-references.** Once its grace period has passed, a dated file is never
+rewritten to change what it said. Exactly one edit is permitted after that:
 
     > **SUPERSEDED by [YYYY-MM-DD[x]-slug](...). <one sentence on what changed.>**
 
